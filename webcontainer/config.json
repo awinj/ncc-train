@@ -1,0 +1,40 @@
+{
+    "buildEntryPath": [
+		"./src/hrhi/**/main/index.js",
+		"./src/hrwa/**/main/index.js",
+		"./src/hrjq/**/main/index.js",
+		"./src/hrkq/**/main/index.js",
+		"./src/hrjf/**/main/index.js",
+		"./src/hryf/**/main/index.js",
+		"./src/hrpub/**/main/index.js",
+		"./src/hrhi/**/refer/**/index.js",
+		"./src/hrwa/**/refer/**/index.js",
+		"./src/hrjf/**/refer/**/index.js",
+		"./src/hrpub/**/refer/**/index.js",
+		"./src/hrcm/**/main/index.js",
+		"./src/hrcm/**/refer/**/index.js",
+		"./src/hrpub/template/report/main/index.js",
+		"./src/hryf/**/refer/**/index.js",
+		"./src/hrp/**/main/index.js",
+		"./src/hrp/**/refer/**/index.js",
+		"./src/hrzz/**/main/index.js",
+		"./src/hrpub/template/third-login/main/index.js",
+		"./src/hrpub/template/third-login/main-a/index.js",
+		"./src/hrpub/template/login/main/index.js",
+		"./src/hrpub/template/receiveOffer/main/index.js",
+		"./src/hrpub/template/refuseOffer/main/index.js"
+	],
+	"proxy": "http://127.0.0.1/",
+    "uapproxy": "http://172.20.9.80:6600/nccloud/resources/",
+	"buildWithoutHTML": [
+		"hrwa/refer",
+		"hrpub/refer",
+		"hrpub/common",
+		"hrjf/refer",
+		"hrhi/refer",
+		"hrcm/refer",
+		"hryf/refer",
+		"hrp/refer"
+	],
+	"devPort": 3006
+}

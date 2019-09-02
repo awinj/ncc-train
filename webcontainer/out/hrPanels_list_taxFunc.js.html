@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: hrPanels/list/taxFunc.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: hrPanels/list/taxFunc.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {base, ajax, toast} from 'nc-lightapp-front';
+
+let {NCDatePicker, NCTable, NCButton, NCModal, NCStep, NCSelect, NCRow, NCCol} = base;
+import './index.less'
+import BasePanelChild from 'src/hrpub/common/components/hrPanels/container/panelChild'
+
+const QueryItemAction = '/nccloud/hrwa/classitem/QueryItemAction.do'
+export default class TaxFunc extends BasePanelChild {
+    constructor(props) {
+        super(props)
+        this.state = {
+            opts: [],
+            modalValue: null, // 整体modal value
+            initialVal: '0',  // 初始
+            childList: null,   // 子节点select区
+            returnObj: {
+                val01: null,
+                val11: null,
+                val12: null,
+                val13: null,
+                val14: null,
+                val15: null,
+                val15: null
+            },
+
+        }
+        this.QueryItemAction = '/nccloud/hrwa/classitem/QueryItemAction.do'
+        // let json = this.context.ctx.props.hrpubJson
+        this.initialData = []
+        //     ,{
+        //     key: "按年累计税表计税",
+        //     value: "2"
+        // }
+        this.getOption = this.getOption.bind(this)
+        this.formatOption = this.formatOption.bind(this)
+    }
+
+    componentDidMount() {
+        let json = this.context.ctx.props.hrpubJson
+        let pageConfig = this.context.ctx.props.pageConfig
+        if (pageConfig.appcode === '60130411' || pageConfig.appcode === '60130410') {
+            this.QueryItemAction = '/nccloud/hrwa/classitem/QueryItemAction.do'
+        } else {
+            this.QueryItemAction = '/nccloud/hrwa/item/QueryItemAction.do'
+        }
+        this.initialData = [{
+            key: json['hrpub-000064'],
+            value: "0"
+        },{
+            key: json['hrpub-000065'],
+            value: "1"
+        },{
+            key: json['hrpub-000066'],
+            value: "2"
+        }]
+        this.getOption()
+    }
+
+    setModalValue() {
+
+        // this.context.ctx.setState({
+        //     childValue: {val00: this.state.initialVal, ...this.state.returnObj}
+        // })
+        this.context.ctx.childValue = {val00: this.state.initialVal, ...this.state.returnObj}
+    }
+    // 获取下拉options
+    getOption() {
+        /*******************searchParam调用方式*******************/
+        let searchParam = this.context.ctx.props.searchParam || {}
+        ajax({
+            url: this.QueryItemAction,
+            data: searchParam,
+            success: res => {
+                if (res.success) {
+                    let data = res.data
+                    this.setState({
+                        opts: this.formatOption(data)
+                    }, () => {
+                        let returnObj = {
+                            val01: this.state.opts[1].value,
+                            val11: this.state.opts[1].value,
+                            val12: this.state.opts[1].value,
+                            val14: this.state.opts[1].value,
+                            val15: this.state.opts[1].value,
+                            val16: this.state.opts[1].value
+                        }
+                        this.setState({
+                            returnObj: returnObj
+                        })
+                        this.selectChange('initial', '0')
+                    })
+                }
+            }
+        })
+    }
+    // 格式化原始数据
+    formatOption(data) {
+        let result = [{
+            key: null,
+            value: null
+        }]
+        data.map(obj => {
+            result.push({
+                key: obj.name,
+                value: `[${obj.showname}]`
+            })
+        })
+        return result
+    }
+    selectChange(type, val) {
+
+        let returnObj = this.state.returnObj
+        switch (type) {
+            case 'initial':
+                this.setState({
+                    initialVal: val
+                })
+                break;
+            case 'salary-proj':
+                returnObj = {
+                    val01: val,
+                    val11: this.state.returnObj.val11,
+                    val12: this.state.returnObj.val12,
+                    val13: this.state.returnObj.val13,
+                    val14: this.state.returnObj.val14,
+                    val15: this.state.returnObj.val15,
+                    val16: this.state.returnObj.val16
+                }
+                this.setState({
+                    returnObj: returnObj
+                })
+                break;
+            case 'salary-year':
+                returnObj = {
+                    val01: null,
+                    val11: val,
+                    val12: this.state.returnObj.val12,
+                    val13: this.state.returnObj.val13,
+                    val14: this.state.returnObj.val14,
+                    val15: this.state.returnObj.val15,
+                    val16: this.state.returnObj.val16
+                }
+                this.setState({
+                    returnObj: returnObj
+                })
+                break;
+            case 'salary-month':
+                returnObj = {
+                    val01: null,
+                    val11: this.state.returnObj.val11,
+                    val12: val,
+                    val13: this.state.returnObj.val13,
+                    val14: this.state.returnObj.val14,
+                    val15: this.state.returnObj.val15,
+                    val16: this.state.returnObj.val16
+                }
+                this.setState({
+                    returnObj: returnObj
+                })
+                break;
+            case 'priod-count':
+                returnObj = {
+                    val01: null,
+                    val11: this.state.returnObj.val11,
+                    val12: this.state.returnObj.val12,
+                    val13: val,
+                    val14: this.state.returnObj.val14,
+                    val15: this.state.returnObj.val15,
+                    val16: this.state.returnObj.val16
+                }
+                this.setState({
+                    returnObj: returnObj
+                })
+                break;
+            case 'new1':
+                returnObj = {
+                    val01: null,
+                    val11: this.state.returnObj.val11,
+                    val12: this.state.returnObj.val12,
+                    val13: this.state.returnObj.val13,
+                    val14: val,
+                    val15: this.state.returnObj.val15,
+                    val16: this.state.returnObj.val16
+                }
+                this.setState({
+                    returnObj: returnObj
+                })
+                break;
+            case 'new2':
+                returnObj = {
+                    val01: null,
+                    val11: this.state.returnObj.val11,
+                    val12: this.state.returnObj.val12,
+                    val13: this.state.returnObj.val13,
+                    val14: this.state.returnObj.val14,
+                    val16: this.state.returnObj.val16,
+                    val15: val
+                }
+                this.setState({
+                    returnObj: returnObj
+                })
+                break;
+            case 'new3':
+                returnObj = {
+                    val01: null,
+                    val11: this.state.returnObj.val11,
+                    val12: this.state.returnObj.val12,
+                    val13: this.state.returnObj.val13,
+                    val14: this.state.returnObj.val14,
+                    val16: val,
+                    val15: this.state.returnObj.val15
+                }
+                this.setState({
+                    returnObj: returnObj
+                })
+                break;
+        }
+        setTimeout(()=>{
+            this.setModalValue()
+        },100)
+    }
+
+    getChildComponent() {
+
+        let json = this.context.ctx.props.hrpubJson
+        const child = () => {
+            let current = null
+            if (this.state.initialVal === '0') {
+                current = (
+                    &lt;NCRow className="hr-panel-date-div">
+                        &lt;NCCol md={4} xs={4} sm={4}>{json['hrpub-000059']}：&lt;/NCCol>
+                        &lt;NCCol md={8} xs={8} sm={8}>
+                            &lt;NCSelect
+                                data = {this.state.opts}
+                                onChange = {this.selectChange.bind(this, 'salary-proj')}
+                                value = {this.state.returnObj.val01}
+                            />
+                        &lt;/NCCol>
+                    &lt;/NCRow>
+                )
+            } else if (this.state.initialVal === '1') {
+                current = (
+                    &lt;React.Fragment>
+                        &lt;NCRow className="hr-panel-date-div">
+                            &lt;NCCol md={4} xs={4} sm={4}>{json['hrpub-000060']}：&lt;/NCCol>
+                            &lt;NCCol md={8} xs={8} sm={8}>
+                                &lt;NCSelect
+                                    data = {this.state.opts}
+                                    onChange = {this.selectChange.bind(this, 'salary-year')}
+                                    value = {this.state.returnObj.val11}
+                                />
+                            &lt;/NCCol>
+                        &lt;/NCRow>
+                        &lt;NCRow className="hr-panel-date-div">
+                            &lt;NCCol md={4} xs={4} sm={4}>{json['hrpub-000061']}：&lt;/NCCol>
+                            &lt;NCCol md={8} xs={8} sm={8}>
+                                &lt;NCSelect
+                                    data = {this.state.opts}
+                                    onChange = {this.selectChange.bind(this, 'salary-month')}
+                                    value = {this.state.returnObj.val12}
+                                />
+                            &lt;/NCCol>
+                        &lt;/NCRow>
+                        &lt;NCRow className="hr-panel-date-div">
+                            &lt;NCCol md={4} xs={4} sm={4}>{json['hrpub-000062']}：&lt;/NCCol>
+                            &lt;NCCol md={8} xs={8} sm={8}>
+                                &lt;NCSelect
+                                    data = {this.state.opts}
+                                    onChange = {this.selectChange.bind(this, 'priod-count')}
+                                    value = {this.state.returnObj.val13}
+                                />
+                            &lt;/NCCol>
+                        &lt;/NCRow>
+                    &lt;/React.Fragment>
+                )
+            } else {
+                current = (
+                    &lt;React.Fragment>
+                        &lt;NCRow className="hr-panel-date-div">
+                            &lt;NCCol md={4} xs={4} sm={4}>{json['hrpub-000068']}：&lt;/NCCol>
+                            &lt;NCCol md={8} xs={8} sm={8}>
+                                &lt;NCSelect
+                                    data = {this.state.opts}
+                                    onChange = {this.selectChange.bind(this, 'new1')}
+                                    value = {this.state.returnObj.val14}
+                                />
+                            &lt;/NCCol>
+                        &lt;/NCRow>
+                        &lt;NCRow className="hr-panel-date-div">
+                            &lt;NCCol md={4} xs={4} sm={4}>{json['hrpub-000069']}：&lt;/NCCol>
+                            &lt;NCCol md={8} xs={8} sm={8}>
+                                &lt;NCSelect
+                                    data = {this.state.opts}
+                                    onChange = {this.selectChange.bind(this, 'new2')}
+                                    value = {this.state.returnObj.val15}
+                                />
+                            &lt;/NCCol>
+                        &lt;/NCRow>
+                        &lt;NCRow className="hr-panel-date-div">
+                            &lt;NCCol md={4} xs={4} sm={4}>{json['hrpub-000073']}：&lt;/NCCol>
+                            &lt;NCCol md={8} xs={8} sm={8}>
+                                &lt;NCSelect
+                                    data = {this.state.opts}
+                                    onChange = {this.selectChange.bind(this, 'new3')}
+                                    value = {this.state.returnObj.val16}
+                                />
+                            &lt;/NCCol>
+                        &lt;/NCRow>
+                    &lt;/React.Fragment>
+                )
+            }
+            return current
+        }
+        return (
+            &lt;div className="hr-panel-tax-func">
+                &lt;NCRow className="hr-panel-date-div">
+                    &lt;NCCol md={4} xs={4} sm={4}>{json['hrpub-000063']}：&lt;/NCCol>
+                    &lt;NCCol md={8} xs={8} sm={8}>
+                        &lt;NCSelect
+                            data = {this.initialData}
+                            value = {this.state.initialVal}
+                            onChange = {this.selectChange.bind(this, 'initial')}
+                        />
+                    &lt;/NCCol>
+                &lt;/NCRow>
+                {
+                    child()
+                }
+            &lt;/div>
+        )
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="orgRefer.html">orgRefer</a></li><li><a href="Pagination.html">Pagination</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allCheckTable">allCheckTable</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#formatSelectData">formatSelectData</a></li><li><a href="global.html#sortBtns">sortBtns</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 21 2019 16:34:25 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

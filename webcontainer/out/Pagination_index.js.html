@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pagination/index.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pagination/index.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+
+import './index.less';
+
+import * as all from 'nc-lightapp-front';
+
+const base = all.base;
+
+const {NCSelect} = base;
+
+const {NCOption} = NCSelect;
+
+/**  
+ * 
+ * current: 当前页面, 从 1 开始计算，如果传入了这个props，则组件视为可控组件
+ * defaultCurrent: 默认当前页
+ * defaultPageSize: 默认每页条数
+ * hideOnSinglePage: 只有一页时是否隐藏分页器
+ * pageSize: 每页条数
+ * pageSizeOptions: 指定每页显示多少条
+ * showQuickJumper: 是否可以快速跳转至某页
+ * showSizeChanger: 是否可以改变pageSize
+ * showTotal: 函数 用于展示有多少条
+ * size: 分页器尺寸
+ * total: 数据总数
+ * onChange: 页码改变回调函数
+ * onShowSizeChange: pageSize改变的回调函数
+*/
+
+class Pagination extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            pageSize: props.pageSize || props.defaultPageSize || 10,
+            current: props.current || props.defaultCurrent || 1,
+            quickJumperInput: '',
+            language: {}
+        };
+
+        this.getPageTotal = this.getPageTotal.bind(this);
+        this.renderPaginationItems = this.renderPaginationItems.bind(this);
+        this.changePage = this.changePage.bind(this);
+        this.movePage = this.movePage.bind(this);
+        this.changeQuickJumper = this.changeQuickJumper.bind(this);
+        this.quickJumperKeyUp = this.quickJumperKeyUp.bind(this);
+        this.changePageSize = this.changePageSize.bind(this);
+        this.turnFivePage = this.turnFivePage.bind(this);
+    }
+
+    componentDidMount() {
+        all.getMultiLang({
+            moduleId: 'hrpub',
+            domainName: 'hrpub',
+            callback: (json, status, init) => {
+                this.setState({
+                    language: json
+                });
+            }
+        });
+    }
+
+    changePageSize(pageSize) {
+        if('onShowSizeChange' in this.props) {
+            this.props.onShowSizeChange(pageSize);
+        }
+        this.setState({
+            pageSize: pageSize
+        });
+    }
+
+    quickJumperKeyUp(e) {
+        let {quickJumperInput} = this.state;
+
+        if(e.keyCode === 13) {
+            quickJumperInput = parseInt(quickJumperInput);
+            if(!isNaN(quickJumperInput)) {
+                this.changePage(quickJumperInput)();
+            }
+            this.setState({
+                quickJumperInput: ''
+            });
+        }
+    }
+
+    changeQuickJumper(e) {
+        let v = e.target.value;
+
+        this.setState({
+            quickJumperInput: v
+        });
+    }
+
+    changePage(page) {
+        return () => {
+            if('onChange' in this.props) {
+                this.props.onChange(page);
+            }
+            if(!('current' in this.props)) {
+                let totalPage = this.getPageTotal();
+                let nCurrent = page;
+
+                if(page &lt;= 0) {
+                    nCurrent = 0;
+                }
+                else if(page >= totalPage) {
+                    nCurrent = totalPage
+                }
+
+                this.setState({
+                    current: nCurrent
+                });
+            }
+        }
+    }
+
+    movePage(direction) {
+        return () => {
+            let {current} = this.state;
+
+            if('current' in this.props) {
+                current = this.props.current;
+            }
+
+            let totalPage = this.getPageTotal();
+            let nCurrent = current;
+
+            if(direction === 'prev') {
+                if(current - 1 > 0) {
+                    nCurrent = current - 1;
+                }
+            }
+            else if(direction === 'next') {
+                if(current + 1 &lt;= totalPage) {
+                    nCurrent = current + 1;
+                }
+            }
+
+            this.changePage(nCurrent)();
+        }
+    }
+
+    getPageTotal() {
+        const {
+            pageSize
+        } = this.state;
+
+        const {total = 1} = this.props;
+
+        let pageCount = Math.ceil(total/pageSize);
+
+        return pageCount;
+    }
+
+    turnFivePage(type) {
+        return () => {
+            let {current} = this.state;
+
+            if('current' in this.props) {
+                current = this.props.current;
+            }
+
+            if(type === 'prev') {
+                this.changePage(current - 4)();
+            }
+            else if(type === 'next') {
+                this.changePage(current + 4)();
+            }
+
+        }
+    }
+
+    renderPaginationItems() {
+        let {current} = this.state;
+
+        if('current' in this.props) {
+            current = this.props.current;
+        }
+
+        let pageCount = this.getPageTotal();
+        let paginationItems = [];
+
+        paginationItems.push(
+            &lt;span 
+                className={`ncc-hr-pagination-item ${current === 1 ? 'active': ''}`}
+                key={0}
+                onClick={this.changePage(1)}
+            >
+                {1}
+            &lt;/span>
+        );
+        if(pageCount &lt; 9) {
+            for(let i = 1; i &lt; pageCount; i++) {
+                pushPage.call(this, i);
+            }
+        }
+        else {
+            let len = pageCount - current > 2 ? current + 2 : pageCount - 1;
+
+            if(current > 4) {
+                paginationItems.push(
+                    &lt;span 
+                        className="ncc-hr-pagination-item ncc-hr-pagination-turn-five"
+                        onClick={this.turnFivePage('prev')}
+                    >
+                        &lt;i className="icon-prev">&lt;/i>
+                    &lt;/span>
+                );
+                for(let i = current - 3;i &lt; len; i++) {
+                    pushPage.call(this, i);
+                }
+            }
+            else {
+                for(let i = 1;i &lt; len; i++) {
+                    pushPage.call(this, i);
+                }
+            }
+            
+            if(pageCount - current > 3) {
+                paginationItems.push(
+                    &lt;span 
+                        className="ncc-hr-pagination-item ncc-hr-pagination-turn-five"
+                        onClick={this.turnFivePage('next')}
+                    >
+                        &lt;i className="icon-next">&lt;/i>
+                    &lt;/span>
+                );
+            }
+            paginationItems.push(
+                &lt;span 
+                    className={`ncc-hr-pagination-item ${current === pageCount ? 'active': ''}`}
+                    onClick={this.changePage(pageCount)}
+                >
+                    {pageCount}
+                &lt;/span>
+            );
+        }
+
+        function pushPage(i) {
+            let classList = ['ncc-hr-pagination-item'];
+            if(parseInt(current) === i + 1) {
+                classList.push('active');
+            }
+
+            paginationItems.push(
+                &lt;span 
+                    className={classList.join(' ')}
+                    key={i}
+                    onClick={this.changePage(i + 1)}
+                >
+                    {i + 1}
+                &lt;/span>
+            );
+        }
+
+        return paginationItems;
+    }
+
+    render() {
+        const {
+            showQuickJumper,
+            showSizeChanger,
+            pageSizeOptions = [10, 20, 30, 40],
+            defaultPageSize = 10,
+            hideOnSinglePage
+        } = this.props;
+        const {quickJumperInput, language} = this.state;
+
+        let totalPage = this.getPageTotal();
+
+        if(totalPage === 1 &amp;&amp; hideOnSinglePage) {
+            return null;
+        }
+
+        return (
+            &lt;div className={`ncc-hr-pagination-wrapper`}>
+                &lt;span 
+                    className={`ncc-hr-pagination-item`}
+                    onClick={this.movePage('prev')}
+                >
+                    {`&lt;`}
+                &lt;/span>
+                {this.renderPaginationItems()}
+                &lt;span 
+                    className={`ncc-hr-pagination-item`}
+                    onClick={this.movePage('next')}
+                >
+                    {'>'}
+                &lt;/span>
+                {
+                    !!showSizeChanger &amp;&amp; 
+                    &lt;span className="ncc-hr-pagination-select-wrapper">
+                        &lt;NCSelect
+                            className={`ncc-hr-pagination-select`}
+                            onChange={this.changePageSize}
+                            defaultValue={defaultPageSize}
+                        >
+                            {pageSizeOptions.map((item, index) => {
+                                return (
+                                    &lt;NCOption
+                                        key={index}
+                                        value={item}
+                                    >
+                                        {item}{language['hrpub-000084']/** 条 */}/{language['hrpub-000085']/** 页 */}
+                                    &lt;/NCOption>
+                                );
+                            })}
+                        &lt;/NCSelect>
+                    &lt;/span>
+                }
+                {
+                    !!showQuickJumper &amp;&amp; 
+                    [  
+                        &lt;span className={`ncc-hr-pagination-letter`}>{language['hrpub-000086']/** 跳至 */}&lt;/span>,
+                        &lt;input 
+                            className={`ncc-hr-pagination-input`} 
+                            value={quickJumperInput}
+                            onChange={this.changeQuickJumper}
+                            onKeyUp={this.quickJumperKeyUp}
+                        />,
+                        &lt;span className={`ncc-hr-pagination-letter`}>{language['hrpub-000085']/** 页 */}&lt;/span>
+                    ]
+                }
+            &lt;/div>
+
+        );
+    }
+}
+
+export default Pagination;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="orgRefer.html">orgRefer</a></li><li><a href="Pagination.html">Pagination</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allCheckTable">allCheckTable</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#formatSelectData">formatSelectData</a></li><li><a href="global.html#sortBtns">sortBtns</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 21 2019 16:34:25 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

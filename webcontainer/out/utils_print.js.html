@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/print.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/print.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+import {getBusinessInfo} from 'nc-lightapp-front';
+import {formatDate} from './utils'
+
+let businessInfo = getBusinessInfo() || {};
+
+/**
+ * 
+ * root: 包裹table的dom元素，请不要使用table组件自带的table-scroll啥的
+ * para: {
+ *  title: 标题
+ *  maker: 制作者的多语言文案
+ *  date: 制作日期的多语言文案
+ *  maxColLen: 每一行最多几列
+ *  beforeHtml: 在表格上方的htm字符串
+ *  afterHtml: 在表格下方的html字符串
+ *  beforeAppend: 允许用户在生成页面前处理表格数据 参数是表格三维数组，需要返回同样的三维数组
+ * }
+ * tableInfo: { 第三个参数，传入表格的全部数据内容和模版信息，会替换掉从页面获取到的数据
+ *     data: [{ 数组
+ *         values: {
+ *              key: {
+ *                  value: 'sss', display: 'ggg'
+ *              }
+ *          }
+ *     }],
+ *     tableTmp:  模版里对应的表格信息
+ * }
+ */
+export default function(root, {
+    title,
+    maker,
+    date,
+    maxColLen = 8,
+    beforeHtml,
+    afterHtml,
+    beforeAppend
+}, tableInfo) {
+
+    let newWin = window.open('');
+    let newDoc = newWin.document;
+
+    let tableData = getTableData(root);
+
+    if(tableInfo) {
+        tableData = exchangeTableBody(tableInfo, tableData);
+    }
+
+    let tableDataList = splitTableData(tableData, maxColLen);
+
+
+    // 允许使用者自由处理最终数据
+    if(beforeAppend) {
+        tableDataList = beforeAppend(tableDataList);
+    }
+
+
+    // 插入header
+    appendHeader(newDoc, title);
+
+    // 添加样式
+    appendStyle(newDoc);
+
+    // 插入表格前自定义内容
+    beforeHtml &amp;&amp; appendCustomerHtml(newDoc, beforeHtml);
+
+    // 添加表格
+    tableDataList.map((tableData, index) => {
+        let className = '';
+        if(index === tableDataList.length - 1) {
+            className = 'print-last-table';
+        }
+        // 添加表格
+        appendTable(newDoc, tableData, className);
+    });
+
+    // 插入表格后自定义内容
+    afterHtml &amp;&amp; appendCustomerHtml(newDoc, afterHtml);
+
+    // 添加页脚
+    appendFooter(newDoc, {
+        maker,
+        date
+    });
+
+    newWin.print();
+    newWin.close();
+}
+
+// 如果调用的时候传入了表格数据，则留下表头，数据用传入的
+function exchangeTableBody(tableInfo, tableData) {
+    let srcData = tableInfo.data;
+    let tmp = tableInfo.tableTmp;
+
+    tableData.length = 1;
+
+    let visibleCol = [];
+
+    tmp.items.map((item) => {
+        if(item.visible) {
+            visibleCol.push(item);
+        }
+    });
+    if(visibleCol.length &lt; tableData[0].length) {
+        let i = tableData[0].length - visibleCol.length;
+        while(i > 0) {
+            visibleCol.unshift('');
+            i--;
+        }
+    }
+
+    srcData.map((item) => {
+        let bodyData = [];
+        visibleCol.map((col) => {
+            if(col) {
+                let colData = item.values[col.attrcode];
+                if(col.options) {
+                    col.options.map((opt) => {
+                        if(opt.value === colData.value) {
+                            colData.display = opt.display;
+                        }
+                    })
+                }
+                if(colData) {
+                    if('display' in colData) {
+                        bodyData.push(colData.display)
+                    }
+                    else if(colData.value === undefined) {
+                        bodyData.push('');
+                    }
+                    else {
+                        bodyData.push(colData.value);
+                    }
+                }
+                else {
+                    bodyData.push('');
+                }
+            }
+            else {
+                bodyData.push('');
+            }
+        });
+        tableData.push(bodyData);
+    });
+
+    return tableData
+}
+
+// 清除空行
+function cleanEmptyTr(tableData) {
+    tableData.map((table) => {
+        table.map((tr, index) => {
+            if(!tr.join('') || tr.join('') === '""') {
+                table.splice(index, 1);
+            }
+        })
+    });
+}
+
+// 插入自定义内容
+function appendCustomerHtml(doc, customerHtml) {
+    let oDiv = doc.createElement('div');
+    oDiv.innerHTML = customerHtml;
+    doc.body.appendChild(oDiv);
+}
+
+// 向header里插入东西
+function appendHeader(doc, title) {
+
+    let titleNode = doc.createElement('h3');
+    titleNode.innerText = title;
+    titleNode.style.textAlign = 'center';
+
+    doc.body.appendChild(titleNode);
+}
+
+// 插入页脚时间和制表人
+function appendFooter(doc, {
+    maker,
+    date,
+}) {
+
+    let footerDiv = doc.createElement('div');
+    footerDiv.className = 'print-footer';
+
+    footerDiv.innerHTML = `
+        &lt;div class="print-maker">
+            ${maker}: ${businessInfo.userName || ''}
+        &lt;/div>
+        &lt;div class="print-date">
+            ${date}: ${formatDate(new Date())}
+        &lt;/div>
+    `;
+
+    doc.body.appendChild(footerDiv);
+}
+
+// 按照最多列拆分表格数据
+function splitTableData(tableData, maxColLen) {
+    let tableDataList = [];
+
+    // 首先判断一行有几列
+    let tableLen = Math.ceil(tableData[0].length / maxColLen);
+    
+    let i = 0;
+
+    while(i &lt; tableLen) {
+
+        // 第i个表格数据
+        tableDataList[i] = [];
+
+        tableData.map((trData) => {
+            let endIndex = maxColLen
+            if(trData.length &lt; maxColLen) {
+                endIndex = trData.length;
+            }
+            let newTr = trData.splice(0, endIndex);
+            tableDataList[i].push(newTr);
+        });
+
+        i++;
+    };
+    
+    return tableDataList;
+}
+
+// 获取表格数据
+function getTableData(root) {
+    let tableData = [[]];
+
+    // 以下是实验数据
+    let tableContent = root.querySelector('.u-table-content');
+
+    let nTableWrapperList = [];
+    let nTableData = [[],[],[]];
+
+    Array.prototype.map.call(tableContent.children, (child) => {
+        let childClassName = child.className
+        
+        if(childClassName.indexOf('u-table-scroll') >= 0) {
+            nTableWrapperList[0] = child;
+        }
+        else if(childClassName.indexOf('u-table-fixed-left') >= 0) {
+            nTableWrapperList[1] = child;
+        }
+        else if(childClassName.indexOf('u-table-fixed-right') >= 0) {
+            nTableWrapperList[2] = child;
+        }
+    });
+
+    nTableWrapperList.map((item, index) => {
+        let tableHeader = item.querySelector('.u-table-header');
+        let tableBody = item.querySelector('.u-table-body') || item.querySelector('.u-table-body-outer');
+        let tableFooter = item.querySelector('.u-table-footer');
+
+        tableHeader &amp;&amp; [].map.call(tableHeader.querySelectorAll('table'), (table) => {
+            nTableData[index] = nTableData[index].concat(mapTable(table));
+        });
+        tableBody &amp;&amp; [].map.call(tableBody.querySelectorAll('table'), (table) => {
+            nTableData[index] = nTableData[index].concat(mapTable(table));
+        });
+        tableFooter &amp;&amp; [].map.call(tableFooter.querySelectorAll('table'), (footer) => {
+            nTableData[index] = nTableData[index].concat(mapTable(footer));
+        });
+    });
+
+    nTableData[1].map((item, trIndex) => {
+        let start1 = 0;
+        let start0 = 0;
+        while(start1 &lt; item.length) {
+            item[start1]
+            nTableData[0][trIndex][start0] = item[start1];
+            start1++;
+            start0++;
+        }
+    });
+    nTableData[2].map((item, trIndex) => {
+        let start2 = item.length - 1;
+        let start0 = nTableData[0][trIndex].length - 1;
+
+        while(start2 >= 0) {
+            nTableData[0][trIndex][start0] = item[start2];
+            start2--;
+            start0--;
+        }
+    });
+    tableData = nTableData[0];
+
+    return tableData;
+}
+
+// 搞出table数据 
+function mapTable(table) {
+    let tableData = [];
+    let trList = table.querySelectorAll('tr'); 
+
+    [].map.call(trList, (tr) => {
+        let trData = [];
+        let tdList = tr.querySelectorAll('td');
+        let thList = tr.querySelectorAll('th');
+
+        [].map.call(tdList, (td) => {
+            trData.push(td.innerText);
+        });
+        [].map.call(thList, (th) => {
+            trData.push(th.innerText);
+        });
+        tableData.push(trData);
+    });
+
+    return tableData;
+}
+
+
+// 插入样式
+function appendStyle(doc) {
+    let newStyle = doc.createElement('style');
+
+    newStyle.innerHTML = `
+        thead, tfoot, tr, th, td {
+            page-break-inside: avoid;
+        }
+        .print-table {
+            border-collapse:collapse;
+            border:1px solid #d0d0d0;
+            page-break-after: always;
+        }
+        .print-last-table {
+            page-break-after: auto;
+        }
+        .print-td {
+            border: 1px solid #d0d0d0;
+            width: 190px;
+            text-align: center;
+            height: 40px;
+            word-break: break-all;
+        }
+        .print-footer {
+            overflow: hidden;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .print-footer .print-maker {
+            float: left;
+        }
+        .print-footer .print-date {
+            float: right;
+        }
+    `;
+
+    doc.body.appendChild(newStyle);
+}
+
+// 插入table
+function appendTable(newDoc, tableData, tableClass) {
+
+    let newTable = newDoc.createElement('table');
+
+    newTable.className = `print-table ${tableClass || ''}`;
+
+    tableData.map((tr) => {
+
+        let newTr = newDoc.createElement('tr');
+        newTr.className = 'print-tr';
+
+        tr.map((td) => {
+            let newTd = newDoc.createElement('td');
+            newTd.className = 'print-td';
+
+            newTd.innerText = td;
+            newTr.appendChild(newTd);
+        });
+        newTable.appendChild(newTr);
+    });
+
+    newDoc.body.appendChild(newTable);
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="Maybe.html">Maybe</a></li><li><a href="orgRefer.html">orgRefer</a></li><li><a href="Pagination.html">Pagination</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allCheckTable">allCheckTable</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dealHeader">dealHeader</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#fixedCol">fixedCol</a></li><li><a href="global.html#formatSelectData">formatSelectData</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#handleQueryRefer">handleQueryRefer</a></li><li><a href="global.html#handleTableChangeColor">handleTableChangeColor</a></li><li><a href="global.html#snCreateUIDom">snCreateUIDom</a></li><li><a href="global.html#sortBtns">sortBtns</a></li><li><a href="global.html#transRadio">transRadio</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 21 2019 10:52:13 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

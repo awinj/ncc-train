@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/hrformulaeditor/components/container.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/hrformulaeditor/components/container.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** * Created by wanghongxiang on 2018/10/19. */import React, {Component} from 'react';import PropTypes from 'prop-types';import {base, ajax, toast} from 'nc-lightapp-front';const {NCTextArea} = baseclass FormulaArea extends Component {    static contextTypes = {        ctx: PropTypes.object    }    constructor(props) {        super(props)        this.state = {            inputSig: '',            areaValTotal: ''        }        this.origin = true        this.originData = ''        this.onChange = this.onChange.bind(this)        this.setCursorPosition = this.setCursorPosition.bind(this)        this.handlePushStr = this.handlePushStr.bind(this)        this.setCurrentFormula = this.setCurrentFormula.bind(this)    }    componentDidMount() {    }    componentWillReceiveProps(newProps) {        let currentArea = this.refs['hr-formula-editor-area'].refs['rootTextArea']        let currentPos = currentArea.selectionStart        let sum = null        this.originData = sum        if (this.state.inputSig === newProps.val &amp;&amp; this.context.ctx.state.switchDefined === 0) {            sum = (this.state.areaValTotal)        } else {            let len = this.context.ctx.state.switchDefined === 0 ? newProps.length : this.context.ctx.state.switchDefined            sum = this.state.areaValTotal + this.handlePushStr(newProps.val, 0, currentPos + len)        }        this.setState({            inputSig: newProps.val,            areaValTotal: sum        })    }    shouldComponentUpdate(nextProps, nextState) {        if (nextState.areaValTotal&amp;&amp;nextState.areaValTotal.slice(-9) === 'undefined') {            return false        }        return true    }    getCurrentFormula() {        return this.state.areaValTotal    }    setCurrentFormula(val) {        this.setState({            areaValTotal: val        })    }    /**     * 在光标位置插入文本，插入文本后光标位置不变     * @param btnContent//按钮的内容     */    handlePushStr = (btnContent, type = 0, currentPos) => {        const _this = this;        let textArea = this.refs['hr-formula-editor-area'].refs['rootTextArea'];        let textAreaLen = textArea.value.length;        let textAreaValue = textArea.value;        let selectionStart = textArea.selectionStart;        if (type === 0) {            let finalRange = (textAreaValue.substr(0, selectionStart) + btnContent).length;            let finalValue = textAreaValue.substr(0, selectionStart) + btnContent + textAreaValue.substring(selectionStart, textAreaLen);            setTimeout(function () {                _this.setState({                    areaValTotal: finalValue                }, () => {                    _this.setCursorPosition(textArea, currentPos || finalRange)                })            }, 0);        } else {            setTimeout(function () {                _this.setState({                    areaValTotal: btnContent                },()=>{                    _this.setCursorPosition(textArea, currentPos || selectionStart)                })            }, 0);        }        this.context.ctx.handleState({            switchDefined: 0        })    };    /**     *  设置输入域(input/textarea)光标的位置     * @param elem     * @param index     */    setCursorPosition = (elem, index) => {        var val = elem.value;        var len = val.length;        // 超过文本长度直接返回        if (len &lt; index) return;        setTimeout(function () {            elem.focus();            if (elem.setSelectionRange) {                // 标准浏览器                elem.setSelectionRange(index, index);            } else {                // IE9- 这个里面有问题在看                var range = elem.createTextRange();                range.moveStart('character', -len);                range.moveEnd('character', -len);                range.moveStart('character', index);                range.moveEnd('character', 0);                range.select();            }        }, 0);    };    onChange(val, type) {        let currentArea = this.refs['hr-formula-editor-area'].refs['rootTextArea']        let textArea = currentArea.value;        let currentPos = currentArea.selectionStart        let flag = false        // if (this.origin) {        //     this.originData = this.state.areaValTotal        //     this.origin = false        // }        if ((textArea &amp;&amp; textArea.replace(/[\s\r\t]*/g, '')) !== (this.originData &amp;&amp; this.originData.replace(/[\s\r\t]*/g, ''))) {            flag = true        }        this.context.ctx.handleState({            defined: flag,            switchDefined: 0        })        this.setState({            areaValTotal: textArea,            inputSig: ''        }, () => {            this.handlePushStr(textArea, type, currentPos)        })    }    render() {        return (            &lt;NCTextArea                ref="hr-formula-editor-area"                className="hr-formula-area"                value={this.state.areaValTotal}                onChange={this.onChange.bind(this, this.state.areaValTotal, 1)}            >&lt;/NCTextArea>        )    }}export default FormulaArea;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="Maybe.html">Maybe</a></li><li><a href="orgRefer.html">orgRefer</a></li><li><a href="Pagination.html">Pagination</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allCheckTable">allCheckTable</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dealHeader">dealHeader</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#fixedCol">fixedCol</a></li><li><a href="global.html#formatSelectData">formatSelectData</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#handleQueryRefer">handleQueryRefer</a></li><li><a href="global.html#handleTableChangeColor">handleTableChangeColor</a></li><li><a href="global.html#snCreateUIDom">snCreateUIDom</a></li><li><a href="global.html#sortBtns">sortBtns</a></li><li><a href="global.html#transRadio">transRadio</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 21 2019 10:52:13 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "source": {
+        "include" : [
+           "./src/hrpub/common/components/"
+        ],
+        "exclude" : [
+            "./src/platform",
+            "./src/uap",
+            "./src/uapbd"
+        ]
+    },
+    "plugins": [
+        "plugins/shout"
+    ], 
+    "templates" : {
+        "monospaceLinks": true
+    },
+    "opts": {
+        "encoding": "utf8",           
+        "destination": "./out/"
+    }
+    
+}
+

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/hrformulaeditor/components/fields.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/hrformulaeditor/components/fields.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** * Created by wanghongxiang on 2018/10/19. */import React, {Component} from 'react';import PropTypes from 'prop-types';import {base, ajax, toast} from 'nc-lightapp-front';const Mock = require('./mock.js')import ModalUtil from '../utils'class FormulaField extends Component {    static contextTypes = {        ctx: PropTypes.object,        hrReferChange: PropTypes.func    }    constructor(props) {        super(props)        this.state = {            tables: [],            fields: [],            current: null,            currentField: null        }        this.getTables = this.getTables.bind(this)        this.getFields = this.getFields.bind(this)        this.getFieldsById = this.getFieldsById.bind(this)        this.setFormulaValByDouble = this.setFormulaValByDouble.bind(this)    }    componentWillReceiveProps(newProps) {        if (newProps.childrenList) {            this.setState({                tables: newProps.childrenList,            })        }    }    getTables() {        const data = Mock.data.right        this.setState({            tables: data        })        ajax({            url: '/nccloud/hrwa/formula/FormulaTableAction.do',            data: {},            success: res => {                this.setState({                    tables: JSON.parse(res.data)                })            }        })    }    getFieldsById(id) {        return this.state.tables.filter(res => {            return res.typeId === id        })    }    getFields(code, inputSig, hintMsg) {        this.setState({            fields :[]        })        let fieldArr = this.getFieldsById(code)[0].itemList        setTimeout(()=>{            this.setState({                current: code,                fields: fieldArr            }, ()=> {                this.context.ctx.handleState({                    // formulaText: '说明：' + hintMsg                    formulaText: this.context.ctx.state.json['hrpub-000039']+': ' + hintMsg                })            })        },0)    }    setFormulaVal(code, inputSig, hintMsg) {        this.setState({            currentField: code        })        this.context.ctx.handleState({            inputSig: '',            // formulaText: '说明：' + hintMsg            formulaText: this.context.ctx.state.json['hrpub-000039']+': ' + hintMsg        })    }    setFormulaValByDouble(fields) {        let refcode = fields.refModelPath        this.context.ctx.handleState({            fieldData: fields        }, ()=> {           let flag = ModalUtil.handleDataByType(fields.iDataType, this.context.ctx,fields, refcode);           if (flag) {               this.context.ctx.handleState({                   inputSig: fields.inputSig,                   // formulaText: '说明：' + fields.hintMsg                   formulaText: this.context.ctx.state.json['hrpub-000039']+': ' + fields.hintMsg,                   switchDefined: fields.inputSig               })           }        })        //     "dataTypeid":"BS000010000100001001",        //     "iDataType":"1",        //     "para2":"",        //     "para3":"",        //     "returnType":"-1",        //     "strArguments":null,        //     "strCode":"bd_psndoc.shortname",        //     "strInputSigRes":null,        //     "strPattern":null,        //     "strRefModelName":null,        //     "strPageCode":"",        //     "displayName":"姓名简拼",        //     "inputSig":"[人员基本信息.姓名简拼]",        //     "hintMsg":"[人员基本信息.姓名简拼]"        // console.log('iDataType留着将来弹窗： ', fields.iDataType)        // this.context.ctx.handleState({        //     inputSig: fields.inputSig,        //     formulaText: '说明：' + fields.hintMsg        // })    }    render() {        let _this = this        const tables = this.state.tables &amp;&amp; this.state.tables.length > 0 ? (            &lt;ul>                {                    this.state.tables.map(table => {                        const active = (table.typeId === this.state.current) ? 'item-content-list-li-active' : ''                        return (                            &lt;li                                className={active + " item-content-list-li"}                                key={table.typeId}                                strCode={table.strCode}                                inputSig={table.inputSig}                                hintMsg={table.hintMsg}                                onClick={this.getFields.bind(this,table.typeId, table.typeName, table.typeName)}                            >{table.typeName}&lt;/li>                        )                    })                }            &lt;/ul>        ) : null        const fields = this.state.fields &amp;&amp; this.state.fields.length > 0 ? (            &lt;ul>                {                    this.state.fields.map(table => {                        const activeField = (table.strCode === _this.state.currentField)? 'item-content-list-li-active' : ''                        return (                            &lt;li                                className={activeField + " item-content-list-field"}                                key={table.strCode}                                strCode={table.strCode}                                inputSig={table.inputSig}                                hintMsg={table.hintMsg}                                onClick={this.setFormulaVal.bind(this,table.strCode, table.inputSig, table.hintMsg)}                                onDoubleClick={this.setFormulaValByDouble.bind(this,table)}                            >{table.displayName}&lt;/li>                        )                    })                }            &lt;/ul>        ) : null        return (            &lt;div className="item-content-list">                &lt;div className="item-content-list-item floatLeft">{tables}&lt;/div>                &lt;div className="item-content-list-item floatLeft">{fields}&lt;/div>            &lt;/div>        )    }}export default FormulaField;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="Maybe.html">Maybe</a></li><li><a href="orgRefer.html">orgRefer</a></li><li><a href="Pagination.html">Pagination</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allCheckTable">allCheckTable</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dealHeader">dealHeader</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#fixedCol">fixedCol</a></li><li><a href="global.html#formatSelectData">formatSelectData</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#handleQueryRefer">handleQueryRefer</a></li><li><a href="global.html#handleTableChangeColor">handleTableChangeColor</a></li><li><a href="global.html#snCreateUIDom">snCreateUIDom</a></li><li><a href="global.html#sortBtns">sortBtns</a></li><li><a href="global.html#transRadio">transRadio</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 21 2019 10:52:13 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

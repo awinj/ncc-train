@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: reportQuery/action/queryCondition.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: reportQuery/action/queryCondition.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+import deepCopy from '../../../utils/deep-copy';
+
+import QueryConditionComp from '../components/QueryCondition';
+
+import CustomSearchArea from '../components/CustomSearch';
+
+export default class QueryCondition {
+
+    constructor(comp) {
+        this.comp = comp;
+        Object.assign(this, comp.props);
+    }
+
+    init = () => {
+        const {
+            reportQuery,
+            initLeftTreeData
+        } = this.comp.props;
+        
+        let template = this.meta.getMeta();
+        // 表单变成编辑态
+        this.form.setFormStatus(reportQuery.currentQueryForm, 'edit');
+
+        // 为了员工台账报表专门执行
+        if(reportQuery.currentTreeData === '1001Z71000000000A3GT') {
+            this.comp.props.renderEmployeeInput();
+            initLeftTreeData();
+        }
+        
+
+        this.dispatch({
+            type: 'reportQuery/update',
+            payload: {
+                queryLeftData: [],
+                queryRightData: [],
+                leftChecked: [],
+                rightChecked: [],
+                hasShowQueryCondition: true
+            }
+        });
+    }
+
+    // 穿梭狂穿梭的时候
+    changeTransfer = (leftData, rightData) => {
+
+        this.dispatch({ 
+            type: 'reportQuery/update',
+            payload: {
+                queryLeftData: leftData,
+                queryRightData: rightData
+            }
+        });
+
+    }
+
+    // 表单编辑后事件
+    afterFormEdit = (props, moduleId, key, value, oldValue) => {
+        let formData = this.form.getAllFormValue(moduleId);
+        let postData = {
+            area_code: moduleId,
+            key: key,
+            model: formData
+        };
+
+        this.dispatch({
+            type: 'reportQuery/afterEditForm',
+            payload: {
+                postData
+            }
+        })
+            .then((res) => {
+                let {form, item_list} = res.data;
+                if(form) {
+                    this.form.setAllFormValue({
+                        [moduleId]: form[moduleId]
+                    });
+                }
+                
+                if(item_list &amp;&amp; item_list.length > 0) {
+                    this.dispatch({
+                        type: 'reportQuery/update',
+                        payload: {
+                            queryLeftData: this.processTransferData(item_list),
+                            queryRightData: []
+                        }
+                    });
+                }
+            });
+    }
+    
+    // 处理返回的穿梭狂数据
+    processTransferData = (data = []) => {
+
+        data.map((item) => {
+            item.display = item.title;
+        });
+
+        return data;
+    }
+
+    // 表单编辑前事件
+    beforeFormEdit = async (props, moduleId, key, value, data) => {
+        let template = this.meta.getMeta();
+        let formData = this.form.getAllFormValue(moduleId);
+
+        let postData = {
+            area_code: moduleId,
+            key: key,
+            model: formData
+        };
+
+        try {
+            let res = await this.dispatch({
+                type: 'reportQuery/beforeEditForm',
+                payload: {
+                    postData: postData
+                }
+            })
+
+            let {editTable, refParam = {}} = res.data;
+            this.form.setFormItemsDisabled(moduleId, {
+                [key]: editTable
+            });
+            template[moduleId].items.map((item) => {
+                if(item.queryCondition &amp;&amp; item.attrcode === key) {
+                    Object.assign(item.queryCondition, refParam);
+                }
+            });
+        }
+        catch(e) {
+        }
+
+        return true;
+    }
+
+    // 穿梭狂item上下移动
+    moveItem = (direction) => {
+        return () => {
+            const {
+                leftChecked, 
+                rightChecked,
+                queryRightData,
+                queryLeftData
+            } = this.comp.props.reportQuery;
+
+            let nList = [...queryRightData];
+            let prefixList = [];
+            let subfixList = [];
+
+            queryRightData.map((item, index) => {
+                if(rightChecked.includes(item.key)) {
+                    // 向上
+                    if(direction === 'up') {
+                        if(index > 0) {
+                            // 与上一个元素交换
+                            nList[index] = nList[index - 1];
+                            nList[index - 1] = item;
+                        }
+                    }
+                    else if(direction === 'upp') {
+                        // 存到前置数组里，并且置空现在元素
+                        prefixList.push(deepCopy(nList[index]));
+                        nList[index] = null;
+                    }
+                    else if(direction === 'down') {
+                        // 与下一个元素交换
+                        if(index &lt; queryRightData.length - 1) {
+                            nList[index] = nList[index + 1];
+                            nList[index + 1] = item;
+                        }
+                    }
+                    else if(direction === 'downn') {
+                        // 存到后置数组里，并且置空当前元素
+                        subfixList.push(deepCopy(nList[index]));
+                        nList[index] = null;
+                    }
+                }
+            });
+            // 删除null元素
+            nList = nList.filter(item => item);
+            // 合并前缀数组
+            if(prefixList.length > 0) {
+                nList = prefixList.concat(nList);
+            }
+            // 合并后缀数组
+            if(subfixList.length > 0) {
+                nList = nList.concat(subfixList);
+            }
+
+            this.dispatch({
+                type: 'reportQuery/update',
+                payload: {
+                    queryRightData: nList
+                }
+            });
+        }
+    }
+
+    // 穿梭狂选中
+    // 这个穿梭狂是我自己写的，比较变态，checkedList里的元素的status为true才是选中
+    checkedTransfer = (type, checkedList) => {
+        
+        let nList = [];
+
+        Object.keys(checkedList).map((key) => {
+            if(checkedList[key].status) {
+                nList.push(checkedList[key].data.key)
+            }
+        })
+
+        let payload = {};
+        if(type === 'left') {
+            payload = {
+                leftChecked: nList
+            };
+        }
+        else {
+            payload = {
+                rightChecked: nList
+            }
+        }
+        this.dispatch({
+            type: 'reportQuery/update',
+            payload: payload
+        });
+    }
+
+    // 如果有form 就渲染querycondition
+    renderSearchTab = () => {
+        const {currentQueryForm} = this.comp.props.reportQuery;
+        if(!currentQueryForm) {
+            return null;
+        }
+        else {
+            return () => {
+                return [{
+                    name: '查询条件2',
+                    content: (
+                        &lt;QueryConditionComp
+                            {...this.comp.props}
+                            initLeftTreeData={this.comp.action.ReportQuery.initLeftTreeData}
+                            searchMan={this.comp.action.ReportQuery.searchMan}
+                            renderEmployeeInput={this.comp.action.ReportQuery.renderEmployeeInput}
+                        />
+                    )
+                }]
+            }
+        }
+    }
+
+    renderCustomSearchBody = () => {
+        let {
+            customFormData,
+            language,
+            customFormValue,
+            customReferValue
+        } = this.comp.props.reportQuery;
+
+        return (
+            &lt;CustomSearchArea
+                language={language}
+                data={customFormData}
+                onChange={this.onChangeCustomSearchArea}
+                customFormValue={customFormValue}
+                customReferValue={customReferValue}
+                ref={ref => this.customSearchRef = ref}
+            />
+        );
+    }
+
+    // 自定义的查询区域的change handle
+    onChangeCustomSearchArea = (type, item) => {
+        return (...args) => {
+            let {reportQuery} = this.comp.props;
+            let value = '';
+
+            if(type === 'select') {
+                value = args[0]
+            }
+            else if(type === 'refer') {
+                let sourceValue = {
+                    refpk: [],
+                    refname: [],
+                    refcode: []  
+                };
+                if(Array.isArray(args[0])) {
+                    args[0].map((v) => {
+                        sourceValue.refpk.push(v.refpk);
+                        sourceValue.refname.push(v.refname);
+                        sourceValue.refcode.push(v.refcode);
+                    });
+
+                }
+                else {
+                    sourceValue.refpk.push(args[0].refpk);
+                    sourceValue.refname.push(args[0].refname);
+                    sourceValue.refcode.push(args[0].refcode);
+                }
+                
+                if(/6/.test(item.dataType)) {
+                    value = sourceValue.refname.join(',');
+                }
+                else if(/4/.test(item.dataType)) {
+                    value = sourceValue.refpk.join(',');
+                }
+                else if(/5/.test(item.dataType)) {
+                    value = sourceValue.refcode.join(',');
+                }
+
+                if(value.split(',').length > 1) {
+                    value = `(${value})`;
+                }
+            }
+            else if(type === 'input') {
+                value = args[0]
+            }
+            else if(type === 'date') {
+                value = args[0]
+            }
+            let payload = {
+                customFormValue: {
+                    ...reportQuery.customFormValue,
+                    [item.code]: value
+                }
+            };
+
+            if(type === 'refer') {
+                payload['customReferValue'] = {
+                    ...reportQuery.customReferValue,
+                    [item.code]: args[0]
+                };
+            }
+
+            this.dispatch({
+                type: 'reportQuery/update',
+                payload: payload
+            });
+        }
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="orgRefer.html">orgRefer</a></li><li><a href="Pagination.html">Pagination</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allCheckTable">allCheckTable</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#formatSelectData">formatSelectData</a></li><li><a href="global.html#sortBtns">sortBtns</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 21 2019 16:34:25 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

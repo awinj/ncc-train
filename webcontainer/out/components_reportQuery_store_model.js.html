@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/reportQuery/store/model.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/reportQuery/store/model.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+import proFetch from '../../../utils/project-fetch';
+
+import mockData from './mock';
+import treeJson from './tree.json';
+import subTreeJson from './subTree.json';
+
+export default {
+    data: {
+        context: {},
+        language: {},
+        pageIns: null,
+        currentTreeData: '', // 左树选中的值
+        queryLeftData: [], // 查询弹窗穿梭狂的左列表
+        queryRightData: [], // 穿梭狂右数据
+        leftChecked: [], // 左侧被选中数据
+        rightChecked: [], // 右侧被选中数据
+        currentQueryForm: '', // 当前弹出的是哪个查询form
+        ifHideSearchModal: false, // 是否在点击查询的时候隐藏查询
+        ifInit: true, // 因为初始化的时候是需要走本地接口，查询走平台接口，偏偏都在一个生命周期内，所以判断一下，机智如我
+        folderTreeList: [],
+        hasShowQueryCondition: false, // 标记是否显示过查询条件2
+        showCustomSearchBody: false, // 点击报表的查询，是否弹出自定义的查询内容，如果是，自定义的内容在action的renderCustomSearchBody方法里
+        showAdvSearchPlanBtn: true, // 是否显示保存方案按钮
+        customFormData: [], // 自定义查询弹窗内容的模版信息数据
+        customFormValue: {}, // 自定义查询弹窗内容填写的值
+        customReferValue: {}, // 自定义查询弹窗内容的参照的值
+    },
+    sync: {
+        update: (state, payload) => {
+            return {
+                ...state,
+                ...payload
+            }
+        }
+    },
+    async: {
+        // 获取左树数据
+        getTreeData(dispatch, getState, payload) {
+            let state = getState()['reportQuery'];
+            let postData = {};
+
+            if(state.orgValue) {
+                postData['pk_org'] = state.orgValue.refpk
+            }
+
+            return proFetch({
+                url: '/nccloud/hr/rpt/FolderQueryAction.do',
+                body: postData
+            });
+        },
+        // 左树获取子树数据
+        loadSubTreeData(dispatch, getState, payload) {
+
+            let state = getState()['reportQuery'];
+            let postData = {
+                pk_dir: payload.pk_folder
+            };
+
+            if(state.orgValue) {
+                postData['pk_org'] = state.orgValue.refpk
+            }
+            return proFetch({
+                url: '/nccloud/hr/rpt/ReportQueryAction.do',
+                body: postData
+            });
+        },
+        // 获取报表数据
+        getReportData(dispatch, getState, payload) {
+            let state = getState()['reportQuery'];
+            let postData = {
+                pk_report: payload.pk_report || state.currentTreeData
+            };
+
+            if(state.orgValue) {
+                postData['pk_org'] = state.orgValue.refpk
+            }
+
+            return proFetch({
+                url: '/nccloud/hr/rpt/ReportQueryOneAction.do',
+                body: postData
+            });
+        },
+        // 表单编辑前事件
+        beforeEditForm(dispatch, getState, payload) {
+            let state = getState()['reportQuery'];
+            let postData = payload.postData;
+
+            if(state.orgValue) {
+                postData['pk_org'] = state.orgValue.refpk
+            }
+
+            return proFetch({
+                url: '/nccloud/hr/rpt/WaRptQryBeforeEditAction.do',
+                body: postData
+            });
+        },
+        // 表单编辑后事件
+        afterEditForm(dispatch, getState, payload) {
+            let state = getState()['reportQuery'];
+            let postData = payload.postData;
+
+            if(state.orgValue) {
+                postData['pk_org'] = state.orgValue.refpk
+            }
+            return proFetch({
+                url: '/nccloud/hr/rpt/WaRptQryAfterEditAction.do',
+                body: postData
+            });
+        },
+        // 自定义弹出框获取最初模版数据
+        getCustomModalData(dispatch, getState, payload) {
+            return proFetch({
+                url: '/nccloud/report/widget/lightreport_fetchreportparam.do',
+                body: {
+                    pk_report: payload['pk_report']
+                }
+            });
+        },
+        // 获取报表自定义弹窗里的参照的路径
+        getReferRefPath(dispatch, getState, payload) {
+            let state = getState()['reportQuery'];
+            return proFetch({
+                url: '/nccloud/hr/rpt/ReportParamQueryAction.do',
+                body: {
+                    pk_org: state.pk_org,
+                    refcode: payload.refCode
+                }
+            });
+        }
+    }
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="Maybe.html">Maybe</a></li><li><a href="orgRefer.html">orgRefer</a></li><li><a href="Pagination.html">Pagination</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allCheckTable">allCheckTable</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dealHeader">dealHeader</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#fixedCol">fixedCol</a></li><li><a href="global.html#formatSelectData">formatSelectData</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#handleQueryRefer">handleQueryRefer</a></li><li><a href="global.html#handleTableChangeColor">handleTableChangeColor</a></li><li><a href="global.html#snCreateUIDom">snCreateUIDom</a></li><li><a href="global.html#sortBtns">sortBtns</a></li><li><a href="global.html#transRadio">transRadio</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 21 2019 10:52:14 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
