@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<authorizes>
+        <authorize>
+                <!-- 应用编码 -->
+                <appcode>TR101010</appcode>
+                <actions>
+                <!-- 卡片查询 -->
+                        <action>hk.action.querycard</action>
+                        <!-- 列表查询 -->
+                        <action>hk.action.querypage</action>
+                        <!-- pk查询 -->
+                        <action>hk.action.querypagebypk</action>
+                        <!-- 保存 -->
+                        <action>hk.action.save</action>
+                        <!-- 删除 -->
+                        <action>hk.action.delete</action>
+                </actions>
+        </authorize>
+</authorizes>

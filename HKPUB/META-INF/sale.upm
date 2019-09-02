@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding='gb2312'?>
+<module name="hk">
+  <public>
+        <component remote="true" singleton="true"  tx="CMT">
+          <interface>nc.itf.hk.pub.ISalesquotationvoMaintain</interface>
+          <implementation>nc.impl.hk.pub.SalesquotationvoMaintainImpl</implementation>
+        </component>
+  </public>
+</module>
