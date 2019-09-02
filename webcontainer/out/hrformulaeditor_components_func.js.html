@@ -1,51 +1,0 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: hrformulaeditor/components/func.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Source: hrformulaeditor/components/func.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/** * Created by wanghongxiang on 2018/10/19. */import React, {Component} from 'react';import PropTypes from 'prop-types';import {base, ajax, toast} from 'nc-lightapp-front';const {    NCTree} = base;const TreeNode = NCTree.NCTreeNode;import ModalUtil from '../utils'const staticURL = {    common: '/nccloud/formula/web/formulatype.do'}const Mock = require('./mock.js')// const propTypes = {//     formulaData: PropTypes.array// };// const defaultProps = {//     formulaData: [],// };class Func extends Component {    static contextTypes = {        ctx: PropTypes.object    }    constructor(props) {        super(props);        // this.state = {        //     childrenList: null        // }        // this.getCommon = this.getCommon.bind(this)        this.onDoubleClick = this.onDoubleClick.bind(this)        this.onSelect = this.onSelect.bind(this)    }    componentDidMount() {        // this.getCommon()    }    // 获取公共函数    // getCommon() {    //     let _this = this    //     ajax({    //         url: staticURL.common,    //         data: {},    //         success: res => {    //             if (res.success) {    //                 let result = []    //    //                 let formulaData = _this.context.formulaData    //                 if (formulaData.length > 0) {    //                     result.push(formulaData, res.data)    //                 } else {    //                     result.push(res.data)    //                 }    //                 _this.setState({    //                     childrenList : result    //                 })    //             }    //         }    //     })    // }    // 处理树子节点    getListChild(data) {        const loop = data => data.map(item => {            if (item.itemList &amp;&amp; item.itemList.length > 0) {                return (                    &lt;TreeNode key={item.typeId } title={item.typeName}>                        {loop(item.itemList)}                    &lt;/TreeNode>                );            } else {                return (                    &lt;TreeNode                        key={item.typeId || Math.random()}                        title={item.displayName}                        hintMsg={item.hintMsg}                        inputSig={item.inputSig}                        treeData = {item}                    />                )            }        })        return loop(data)    }    // 双击事件    onDoubleClick(checkedKeys, e) {        let props = e.node.props        let type = props.treeData.iDataType   // 用于判断是否弹框        // 处理模态框        let flag = ModalUtil.handleDataByType(type, this.context.ctx,props.treeData, '')        if (flag) {            this.context.ctx.handleState({                inputSig: props.inputSig,                formulaText: '说明：' + props.hintMsg,                switchDefined: props.inputSig.indexOf('(') + 1            })        }    }    // 单击事件    onSelect(selectedKeys, e) {        let props = e.selectedNodes[0].props        this.context.ctx.handleState({            formulaText: '说明：' + props.hintMsg        })    }    render() {        const childrenList = this.context.ctx.state.childrenList.dsList        const child = childrenList ? this.getListChild(childrenList): null        return (            &lt;div>                &lt;NCTree                    openIcon={&lt;i className="icon iconfont icon-shu_zk">&lt;/i>}                    closeIcon={&lt;i className="icon iconfont icon-shushouqi">&lt;/i>}                    onSelect={this.onSelect}                    onDoubleClick={this.onDoubleClick}                >                    {child}                &lt;/NCTree>            &lt;/div>        );    }}// Func.propTypes = propTypes;// Func.defaultProps = defaultProps;export default Func;</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="orgRefer.html">orgRefer</a></li><li><a href="Pagination.html">Pagination</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allCheckTable">allCheckTable</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#formatSelectData">formatSelectData</a></li><li><a href="global.html#sortBtns">sortBtns</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 21 2019 16:34:25 GMT+0800 (GMT+08:00)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>
