@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"><meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title> Application </title>
+  <link rel="stylesheet" href="../../../../lappreportrt/nc-report/index.css" />
+  <link rel="stylesheet" href="../../../../platform/nc-lightapp-front/nc-lightapp-front.css" />
+  <script type="text/javascript" src="../../../../platform/yonyou-yyy.js"></script>
+  <!-- <%= configcss %> -->
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="text/javascript" src="../../../../platform/polyfill.min.js"></script>
+  <script type="text/javascript" src="../../../../platform/ca/ca0.js"></script>
+  <script type="text/javascript" src="../../../../platform/ca/ca1.js"></script>
+  <script type="text/javascript" src="../../../../platform/ca/ca2.js"></script>
+  <script type="text/javascript" src="../../../../platform/ca/nccsign.js"></script>
+  <script type="text/javascript" src="../../../../platform/ca/sha256.js"></script>
+  <script>
+    (function () {
+      loadScripts([
+        { src: '../../../../platform/axios.min.js', root: 'axios' },
+        { src: '../../../../platform/react.production.min.js', root: 'React' },
+        { src: '../../../../platform/react-dom.production.min.js', root: 'ReactDOM' },
+        { src: '../../../../platform/ReactRouter.min.js', root: 'ReactRouter' },
+        { src: '../../../../platform/nc-lightapp-front/nc-lightapp-front.js', root: 'nc-lightapp-front' }
+      ])
+      function loadScripts(scripts) {
+        // scripts = [{ src, root }]
+        scripts.forEach((e) => {
+          var src = e.src, root = e.root
+          if (window.top[root]) {
+            window[root] = window.top[root];
+            if (root === 'nc-lightapp-front') {
+              if (window['platform-login']) {
+                window[root].pageTo = window['platform-login'].pageTo;
+              }
+            }
+          } else {
+            // document.body.appendChild(script)是异步加载script
+            // 直接创建sciprt标签是同步加载script
+            // 分开script，防止html认为是闭合标签
+            document.write('<scr' + 'ipt type="text/javascript" src="' + src + '"></scr' + 'ipt>');
+          }
+        })
+      }
+    })()
+  </script>
+  <!-- <%= configjs %> -->
+</body>

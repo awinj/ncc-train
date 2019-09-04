@@ -1,0 +1,8 @@
+{
+	"buildEntryPath": [
+		"./src/hrhi/*/*/*/index.js"
+	],
+	"proxy":"http://localhost:80",
+	"buildWithoutHTML": [ "uapbd/refer", "uap/refer" ],
+	"devPort": 3006
+}
