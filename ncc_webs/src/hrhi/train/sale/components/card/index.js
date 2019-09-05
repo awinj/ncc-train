@@ -26,4 +26,11 @@ class Card extends React.Component{
     }
 }
 
-export default createPage({})(Card)
+export default createPage({
+    billinfo: {
+        billtype: 'card',
+        pagecode: configExt.PageConfig.CardPage,
+        headcode: configExt.CardArea.head,
+        bodycode: configExt.CardArea.body[0]
+    }
+})(Card)

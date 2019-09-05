@@ -97,7 +97,10 @@ export function cardSave(props, isFromSide) {
             flag=flag&props.cardTable.checkTableRequired(CardArea.body[i]);
         }
         if (flag) {
-            let data = props.createMasterChildData(PageConfig.CardPage, CardArea.head, CardArea.body, 'cardTable');
+            let data = props.createMasterChildData(PageConfig.CardPage, CardArea.head, CardArea.body[0]);
+            if(CardArea.body.length>1){//一主多子
+                data=props.createExtCardData(PageConfig.CardPage, CardArea.head, CardArea.body[0]);
+            }
             props.validateToSave(data, () => {
 
                 let status = props.getUrlParam('status');
@@ -116,7 +119,7 @@ export function cardSave(props, isFromSide) {
                             let id = null;
                             if (res.data) {
                                 if (res.data.head && res.data.head[CardArea.head]) {
-                                    id = res.data.head[CardArea.head].rows[0].values[PRIMARTKEY.head_id].value;
+                                    id = res.data.head[CardArea.head].rows[0].values[PrimaryKey.head].value;
                                     props.form.setAllFormValue({ [CardArea.head]: res.data.head[CardArea.head] });
                                 }
                                 for(let tabCode of CardArea.body){

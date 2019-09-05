@@ -1,6 +1,8 @@
 
 
 //列表模板渲染
+import {bodyButtonClick} from "../../list/event/buttonClick";
+
 export function initTemplate(props, json) {
     const {PageConfig} =props.configExt;
     let config={
@@ -31,7 +33,7 @@ function register2Props(data,props) {
 }
 
 function modifierMeta(props, meta, json) {
-    const {ListArea} =props.configExt;
+    const {ListArea,PrimaryKey,RequestUrl,PageConfig} =props.configExt;
     //查询区参照过滤
     meta[ListArea.query].items.map((item) => {
         if (item.attrcode === 'pk_org') { //财务组织过滤
@@ -47,27 +49,27 @@ function modifierMeta(props, meta, json) {
     //开启分页
     meta[ListArea.head].pagination = true;
 
-    // meta[ListArea.head].items = meta[ListArea.head].items.map((item, key) => {
-    //     if (item.attrcode == PRIMARTKEY.bill_no) {
-    //         item.render = (text, record, index) => {
-    //             return (
-    //                 <a
-    //                     style={{cursor: 'pointer'}}
-    //                     onClick={() => {
-    //                         props.pushTo(REQUESTURL.toCard, {
-    //                             status: 'browse',
-    //                             id: record[PRIMARTKEY.head_id].value,
-    //                             pagecode: CARD.page_code
-    //                         });
-    //                     }}
-    //                 >
-    //                     {record[PRIMARTKEY.bill_no] && record[PRIMARTKEY.bill_no].value}
-    //                 </a>
-    //             );
-    //         };
-    //     }
-    //     return item;
-    // });
+    meta[ListArea.head].items = meta[ListArea.head].items.map((item, key) => {
+        if (item.attrcode == PrimaryKey.bill_no) {
+            item.render = (text, record, index) => {
+                return (
+                    <a
+                        style={{cursor: 'pointer'}}
+                        onClick={() => {
+                            props.pushTo(RequestUrl.toCard, {
+                                status: 'browse',
+                                id: record[PrimaryKey.head].value,
+                                pagecode: PageConfig.CardPage
+                            });
+                        }}
+                    >
+                        {record[PrimaryKey.bill_no] && record[PrimaryKey.bill_no].value}
+                    </a>
+                );
+            };
+        }
+        return item;
+    });
 
     //添加操作列
     meta[ListArea.head].items.push({
@@ -85,7 +87,7 @@ function modifierMeta(props, meta, json) {
             return props.button.createOprationButton(buttonAry, {
                 area: ListArea.bodyBtn,
                 buttonLimit: 3,
-                onButtonClick: (props, key) => bodyButtonClick({...props, json}, key, text, record, index)
+                onButtonClick: (prop, key) => bodyButtonClick({...props, json}, key, text, record, index)
             });
         }
     });

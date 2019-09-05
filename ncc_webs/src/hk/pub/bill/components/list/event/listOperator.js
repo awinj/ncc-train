@@ -46,9 +46,29 @@ export function listDelete(props, pk, index) {
     });
 }
 
+function getTablePageInfo(props,moduleId) {
+    if (typeof moduleId == 'string') {
+        if (props.myTable[moduleId]) {
+            let { pageIndex = 0, pageSize = 10 } = props.myTable[moduleId].state.table.pageInfo;
+            return {
+                pageIndex: pageIndex > 0 ? pageIndex - 1 : 0,
+                pageSize
+            };
+        } else {
+            let { pageIndex = 0, pageSize = 10 } = props.myTableData[moduleId].pageInfo;
+            return {
+                pageIndex: pageIndex > 0 ? pageIndex - 1 : 0,
+                pageSize
+            };
+        }
+    }
+    return { pageIndex: 0, pageSize: 10 };
+}
+
 //列表查询
 export function listSearch(props, queryInfo) {
     const {ListArea,RequestUrl,PageConfig,ButtonAction,SearchCache} =props.configExt;
+    // let pageInfo=getTablePageInfo(props,ListArea.head);
     let pageInfo = props.table.getTablePageInfo(ListArea.head);
     if (!queryInfo) {
         queryInfo = props.search.getQueryInfo(ListArea.query);

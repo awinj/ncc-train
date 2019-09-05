@@ -18,9 +18,9 @@ const ListArea={
 }
 
 const PrimaryKey={
-    head:"",    //主表主键
-    body:[""],  //子表主键集合，根据显示顺序
-    bill_no:""  //单据号字段
+    head:"pk_quotation",    //主表主键
+    body:["pk_quotation_b"],  //子表主键集合，根据显示顺序
+    bill_no:"billno"  //单据号字段
 }
 
 const ButtonAction={
