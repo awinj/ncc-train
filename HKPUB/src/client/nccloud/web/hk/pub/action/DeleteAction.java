@@ -4,6 +4,7 @@ package nccloud.web.hk.pub.action;
 import java.util.Collection;
 
 import nc.bs.logging.Logger;
+import nc.itf.hk.pub.ISalesquotationvoMaintain;
 import nc.md.model.MetaDataException;
 import nc.md.persist.framework.IMDPersistenceQueryService;
 import nc.vo.hrhi.sale.AggSalesQuotationVO;
@@ -57,7 +58,7 @@ public class DeleteAction implements ICommonAction {
     /**
      * 调用动作脚本
      *
-     * @param actionCode
+     * @param
      * @param aggVOs
      * @return
      * @throws BusinessException
@@ -72,22 +73,29 @@ public class DeleteAction implements ICommonAction {
         String actionCode = this.getActionCode();
         String billType = CommonUtil.getBillTypeCode();
 
-        CloudPFlowContext context = new CloudPFlowContext();
-        context.setActionName(actionCode);
-        context.setBillType(billType);
-        context.setBillVos(aggVOs);
-        Logger.debug("开始调用动作脚本 ActionName[" + actionCode + "] BillType[" + billType
-                + "]...");
 
-        ICloudScriptPFlowService service =
-                ServiceLocator.find(ICloudScriptPFlowService.class);
 
-        Object[] result = service.exeScriptPFlow(context);
+        String pk=aggVOs[0].getParentVO().getPrimaryKey();
+        Object[] result;
+        ServiceLocator.find(ISalesquotationvoMaintain.class).delete(aggVOs,null);
+        return aggVOs;
 
-        Logger.debug("调用动作脚本 ActionName[" + actionCode + "] BillType[" + billType
-                + "]结束");
-
-        return result;
+//        CloudPFlowContext context = new CloudPFlowContext();
+//        context.setActionName(actionCode);
+//        context.setBillType(billType);
+//        context.setBillVos(aggVOs);
+//        Logger.debug("开始调用动作脚本 ActionName[" + actionCode + "] BillType[" + billType
+//                + "]...");
+//
+//        ICloudScriptPFlowService service =
+//                ServiceLocator.find(ICloudScriptPFlowService.class);
+//
+//        Object[] result = service.exeScriptPFlow(context);
+//
+//        Logger.debug("调用动作脚本 ActionName[" + actionCode + "] BillType[" + billType
+//                + "]结束");
+//
+//        return result;
     }
 
     /**

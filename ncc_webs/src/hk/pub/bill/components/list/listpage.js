@@ -54,7 +54,7 @@ export  default class BaseListPage extends React.Component {
 
 
 
-        const {ListArea,SearchCache,PrimaryKey} = this.props.configExt;
+        const {ListArea,SearchCache,PrimaryKey,PageConfig} = this.props.configExt;
         let param = {
             showFlag: true
         }
@@ -64,7 +64,7 @@ export  default class BaseListPage extends React.Component {
                 <div className="nc-bill-header-area">
                     <div className="header-title-search-area">
                         {/* {createPageIcon()} */}
-                        <h2 className="title-search-detail">{"title"}</h2>
+                        <h2 className="title-search-detail">{PageConfig.CardTitle}</h2>
                     </div>
 
                     <div className="header-button-area">
@@ -90,9 +90,7 @@ export  default class BaseListPage extends React.Component {
                         handlePageInfoChange: this.handlePageInfoChange.bind(this),
                         onRowDoubleClick: this.onRowDoubleClick.bind(this)
                     })}
-                    {
-                        console.log("wsw"+this.props.myTable)
-                    }
+
                 </div>
             </div>
 

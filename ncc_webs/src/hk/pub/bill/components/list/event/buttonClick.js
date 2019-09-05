@@ -20,14 +20,14 @@ import { listEdit, listDelete,listSearch,listRefresh,listCreate } from './listOp
     //列表操作列按钮操作
 export function bodyButtonClick(props, key, text, record, index) {
         const {ListArea,PrimaryKey,ButtonAction} =props.configExt;
-        let pk = record[ListArea.head] && record[PrimaryKey.head].value;
+        let pk = record[PrimaryKey.head] && record[PrimaryKey.head].value;
         switch (key) {
             //修改
-            case ButtonAction.editLine:
+            case ButtonAction.edit:
                 listEdit(props, pk)
                 break;
             //删除
-            case ButtonAction.delLine:
+            case ButtonAction.del:
                 listDelete(props, pk, index);
                 break;
         }

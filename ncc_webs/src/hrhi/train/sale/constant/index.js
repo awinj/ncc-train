@@ -81,6 +81,8 @@ const PageConfig={
     AppCode: '60080010',
     CardPage: '60080010_CARD',  //卡片页面编码
     ListPage:'60080010_LIST',  //列表页面编码
+    CardTitle:'销售客户单',
+    ListTitle:'销售客户单',
     node_type: '0'
 }
 

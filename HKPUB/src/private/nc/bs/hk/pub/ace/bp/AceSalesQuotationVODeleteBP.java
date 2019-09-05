@@ -18,9 +18,9 @@ public class AceSalesQuotationVODeleteBP {
         DeleteBPTemplate<AggSalesQuotationVO> bp = new DeleteBPTemplate<AggSalesQuotationVO>(
                 SalesQuotationVOPluginPoint.DELETE);
         // 增加执行前规则
-        this.addBeforeRule(bp.getAroundProcesser());
+//        this.addBeforeRule(bp.getAroundProcesser());
         // 增加执行后业务规则
-        this.addAfterRule(bp.getAroundProcesser());
+//        this.addAfterRule(bp.getAroundProcesser());
         bp.delete(bills);
     }
 

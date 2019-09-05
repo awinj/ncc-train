@@ -43,6 +43,7 @@ public class QueryListAction implements ICommonAction {
 
             // 1、 获取scheme
             IQueryScheme scheme = this.getScheme(queryParam);
+
             // 2、调用服务,获取VO信息(平台默认生成方法，有效率问题，最佳实现要改掉)
             AggSalesQuotationVO[] aggvos =
                     CommonUtil.getMaintainService().query(scheme);

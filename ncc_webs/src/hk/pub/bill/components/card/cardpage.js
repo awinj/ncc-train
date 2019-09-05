@@ -75,7 +75,7 @@ export default class BaseCardPage extends React.Component {
         let { createForm } = form;
         let { createCardTable } = cardTable;
         let { createBillHeadInfo } = BillHeadInfo;
-        const {ButtonAction,CardArea}=this.props.configExt;
+        const {ButtonAction,CardArea,PageConfig}=this.props.configExt;
         let status = this.props.getUrlParam('status');
         let id = this.props.getUrlParam('id');
 
@@ -86,7 +86,7 @@ export default class BaseCardPage extends React.Component {
                         <div className="nc-bill-header-area">
                             <div>
                                 {createBillHeadInfo({
-                                    title: "标题",//标题
+                                    title: PageConfig.CardTitle,//标题
                                     // billCode: billNo && billNo.value,//单据号
                                     backBtnClick: this.onButtonClick.bind(this, this.props, ButtonAction.back)
                                 })}

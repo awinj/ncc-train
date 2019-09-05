@@ -203,13 +203,13 @@ export function getCardData(props, id, isRefresh = false) {
     clearAll(props);
     if (!isRefresh) {
         let cardData = getCacheById(id, DataSource);
+        debugger
         if (cardData) {//有缓存
             cardData.head && props.form.setAllFormValue({ [CardArea.head]: cardData.head[CardArea.head] });
             if(cardData.body instanceof Array){
                 cardData.body && props.cardTable.setMulTablesData(cardData);
-            }
-            else{
-                cardData.body && props.cardTable.setTableData(CardArea.body, cardData.body[CardArea.body[0]]);
+            }else{
+                cardData.body && props.cardTable.setTableData(CardArea.body[0], cardData.body[CardArea.body[0]]);
             }
             setByStatus(props);
             return;
@@ -230,9 +230,8 @@ export function getCardData(props, id, isRefresh = false) {
                 if (data && data.body) {
                     if(data.body instanceof Array){
                         data.body && props.cardTable.setMulTablesData(data);
-                    }
-                    else{
-                        data.body && props.cardTable.setTableData(CardArea.body, data.body[CardArea.body[0]]);
+                    }else{
+                        data.body && props.cardTable.setTableData(CardArea.body[0], data.body[CardArea.body[0]]);
                     }
                 }
                 // 更新缓存
