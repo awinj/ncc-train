@@ -37,48 +37,31 @@ public class QueryListAction implements ICommonAction {
         PageQueryVO page = null;
 
         QueryTreeFormatVO queryParam = this.getQueryParam(paramIRequest);
+
+
         try {
-            List<SalesQuotationVO> heads= (List<SalesQuotationVO>) ServiceLocator.find(IUAPQueryBS.class).retrieveAll(SalesQuotationVO.class);
 
-            Grid grid = null;
-            GridOperator operator = new GridOperator(queryParam.getPageCode());
-            String[] pks=new String[heads.size()];
-            for (int i=0;i<pks.length;i++) {
-                pks[i]=heads.get(i).getPrimaryKey();
+            // 1、 获取scheme
+            IQueryScheme scheme = this.getScheme(queryParam);
+            // 2、调用服务,获取VO信息(平台默认生成方法，有效率问题，最佳实现要改掉)
+            AggSalesQuotationVO[] aggvos =
+                    CommonUtil.getMaintainService().query(scheme);
+            // 查询服务(scheme);
+            if ((aggvos != null) && (aggvos.length > 0)) {
+                // 3、处理分页
+                String[] pks = this.getPks(aggvos);
+                AggSalesQuotationVO[] bills =
+                        this.getDefaulePageBill(queryParam, aggvos);
+                page = new PageQueryVO(pks, bills);
+            } else {
+                page = this.createNullPage();
             }
-            grid = operator.toGrid(heads.toArray(new SalesQuotationVO[0]));
-            grid.getModel().setAllpks(pks);
-            return grid;
-        } catch (BusinessException e) {
-            e.printStackTrace();
+        } catch (BusinessException ex) {
+            // 处理异常信息
+            Logger.error(ex);
+            ExceptionUtils.wrapException(ex);
         }
-
-
-
-
-//        try {
-//
-//            // 1、 获取scheme
-////            IQueryScheme scheme = this.getScheme(queryParam);
-//            // 2、调用服务,获取VO信息(平台默认生成方法，有效率问题，最佳实现要改掉)
-//            AggSalesQuotationVO[] aggvos =
-//                    CommonUtil.getMaintainService().query(null);
-//            // 查询服务(scheme);
-//            if ((aggvos != null) && (aggvos.length > 0)) {
-//                // 3、处理分页
-//                String[] pks = this.getPks(aggvos);
-//                AggSalesQuotationVO[] bills =
-//                        this.getDefaulePageBill(queryParam, aggvos);
-//                page = new PageQueryVO(pks, bills);
-//            } else {
-//                page = this.createNullPage();
-//            }
-//        } catch (BusinessException ex) {
-//            // 处理异常信息
-//            Logger.error(ex);
-//            ExceptionUtils.wrapException(ex);
-//        }
-//        // 转换grid信息，返回前端
+        // 转换grid信息，返回前端
         return this.transPageInfoToGrid(page, queryParam, queryParam.getPageCode());
     }
 

@@ -4,7 +4,7 @@ import nc.vo.pubapp.pattern.model.entity.bill.AbstractBill;
 import nc.vo.pubapp.pattern.model.meta.entity.bill.BillMetaFactory;
 import nc.vo.pubapp.pattern.model.meta.entity.bill.IBillMeta;
 
-@nc.vo.annotation.AggVoInfo(parentVO = "nc.vo.trainncc.salesquotation.SalesQuotationVO")
+@nc.vo.annotation.AggVoInfo(parentVO = "nc.vo.hrhi.sale.SalesQuotationVO")
 
 public class AggSalesQuotationVO extends AbstractBill {
 

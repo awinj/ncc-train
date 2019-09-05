@@ -58,7 +58,7 @@ public class SaveAction implements ICommonAction {
     /**
      * 调用动作脚本
      *
-     * @param actionCode
+     * @param
      * @param aggVOs
      * @return
      * @throws BusinessException
@@ -69,7 +69,15 @@ public class SaveAction implements ICommonAction {
         String actionCode = this.getActionCode();
         String billType = CommonUtil.getBillTypeCode();
 
-        Object[] result=ServiceLocator.find(ISalesquotationvoMaintain.class).insert(aggVOs,null);
+        String pk=aggVOs[0].getParentVO().getPrimaryKey();
+        Object[] result;
+        if(pk==null){
+            result=ServiceLocator.find(ISalesquotationvoMaintain.class).insert(aggVOs,null);
+        }
+        else{
+             result=ServiceLocator.find(ISalesquotationvoMaintain.class).update(aggVOs,null);
+        }
+
 
 //        CloudPFlowContext context = new CloudPFlowContext();
 //        context.setActionName(actionCode);
