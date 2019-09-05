@@ -9,43 +9,43 @@ import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.model.meta.entity.vo.VOMetaFactory;
 
 /**
- * <b> ´Ë´¦¼òÒªÃèÊö´ËÀà¹¦ÄÜ </b>
+ * <b> æ­¤å¤„ç®€è¦æè¿°æ­¤ç±»åŠŸèƒ½ </b>
  * <p>
- *   ´Ë´¦Ìí¼ÓÀÛµÄÃèÊöĞÅÏ¢
+ *   æ­¤å¤„æ·»åŠ ç´¯çš„æè¿°ä¿¡æ¯
  * </p>
- *  ´´½¨ÈÕÆÚ:2019-8-28
+ *  åˆ›å»ºæ—¥æœŸ:2019-8-28
  * @author yonyouBQ
  * @version NCPrj ??
  */
- 
+
 public class SalesQuotationVO extends SuperVO {
-	
-/**
-*Ê±¼ä´Á
-*/
-public static final String TS="ts";;
-    
-    
-/**
-* ÊôĞÔ Éú³ÉÊ±¼ä´ÁµÄGetter·½·¨.ÊôĞÔÃû£ºÊ±¼ä´Á
-*  ´´½¨ÈÕÆÚ:2019-8-28
-* @return nc.vo.pub.lang.UFDateTime
-*/
-public UFDateTime getTs() {
-return (UFDateTime)this.getAttributeValue(SalesQuotationVO.TS);
-}
-/**
-* ÊôĞÔÉú³ÉÊ±¼ä´ÁµÄSetter·½·¨.ÊôĞÔÃû£ºÊ±¼ä´Á
-* ´´½¨ÈÕÆÚ:2019-8-28
-* @param newts nc.vo.pub.lang.UFDateTime
-*/
-public void setTs(UFDateTime ts){
-this.setAttributeValue(SalesQuotationVO.TS,ts);
-} 
-     
+
+    /**
+     *æ—¶é—´æˆ³
+     */
+    public static final String TS="ts";;
+
+
+    /**
+     * å±æ€§ ç”Ÿæˆæ—¶é—´æˆ³çš„Getteræ–¹æ³•.å±æ€§åï¼šæ—¶é—´æˆ³
+     *  åˆ›å»ºæ—¥æœŸ:2019-8-28
+     * @return nc.vo.pub.lang.UFDateTime
+     */
+    public UFDateTime getTs() {
+        return (UFDateTime)this.getAttributeValue(SalesQuotationVO.TS);
+    }
+    /**
+     * å±æ€§ç”Ÿæˆæ—¶é—´æˆ³çš„Setteræ–¹æ³•.å±æ€§åï¼šæ—¶é—´æˆ³
+     * åˆ›å»ºæ—¥æœŸ:2019-8-28
+     * @param newts nc.vo.pub.lang.UFDateTime
+     */
+    public void setTs(UFDateTime ts){
+        this.setAttributeValue(SalesQuotationVO.TS,ts);
+    }
+
     @Override
     public IVOMeta getMetaData() {
-    return VOMetaFactory.getInstance().getVOMeta("hrhi.SalesQuotationVO");
+        return VOMetaFactory.getInstance().getVOMeta("hrhi.SalesQuotationVO");
     }
-   }
+}
     

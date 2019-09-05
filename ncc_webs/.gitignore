@@ -65,8 +65,9 @@ yarn.lock
 
 .DS_Store
 
-src/uapbd
+
 src/uapbd_front
-src/uap
-src/platform
-src/lappreportrt
+#src/uapbd
+#src/uap
+#src/platform
+#src/lappreportrt
