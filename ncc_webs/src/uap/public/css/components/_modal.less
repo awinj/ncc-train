@@ -1,0 +1,40 @@
+@import "./../helpers/_mixin.less";
+// 修复modal中包含tabList且多个table情况，参考imp/prealerDevelop(table横向排列)
+.model-tab-table{
+    height: 740px;
+    .u-tabs-content{
+        min-height: 535px;
+    }
+    .form-mixin-table{
+        max-height: 450px;
+        .u-table-body{
+            min-height: 220px !important;
+            max-height: 350px !important;
+        }
+    }
+}
+.limit-modal-body-height{
+    background-color: #ddd;
+    .u-modal-body{
+        max-height:450px;
+    }
+}
+
+//限制modal内部单个table高度 参考uap/rbac/resp/importFunc 引入应用
+.single-table-modal{
+    .u-table-body{
+        min-height: 330px !important;
+        max-height: 330px !important;
+    }
+}
+//限制modal内部单个table高度 table纵向排列
+.double-vertical-table-modal{
+    .u-table-body{
+        min-height: auto !important;
+    }
+    .lightapp-component-simpleTable{
+        max-height: 160px;
+    }
+}
+
+

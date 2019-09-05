@@ -1,0 +1,54 @@
+@color-solid:rgba(235, 235, 235, 1);
+@color-white: #fff;
+@color-primary:  #e14c46;
+.transfer-main{
+    clear: both;
+    height: 100%;
+    width: 100%;
+    min-height: 300px;
+    border: 1px @color-solid solid;
+    .left-area{
+        height: 100%;
+        display: inline-block;
+        vertical-align: top;
+        width: calc(~'50% - 91px');
+        overflow: auto;
+    }
+    .button-area{
+        height: 100%;
+        width: 180px;
+        border-left: 1px @color-solid solid;
+        border-right: 1px @color-solid solid;
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        padding-top: 100px;
+        .opr-botton{
+            padding-top: 25px;
+            display: block;
+            margin: 0 auto;
+        }
+    }
+    .right-area{
+        height: 100%;
+        display: inline-block;
+        vertical-align: top;
+        width: calc(~'50% - 91px');
+        overflow: auto;
+    }
+
+    // .right-area::-webkit-scrollbar,.left-area::-webkit-scrollbar{/*整个滚动条区域的宽度*/
+    //     width:8px;
+    // }
+    // .right-area::-webkit-scrollbar-button,.left-area::-webkit-scrollbar-button{/*滚动条上下两边的按钮*/
+    //     display:none;
+    // }
+    // .right-area::-webkit-scrollbar-thumb,.left-area::-webkit-scrollbar-thumb{/*真滚动条样式*/
+    //     //-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    //     background:rgba(0,0,0,0.54);
+    //     border-radius: 100px ;
+    // }
+    // .right-area::-webkit-scrollbar-track,.left-area::-webkit-scrollbar-track {/*滚动条滚动的轨道*/
+    //     display: none;
+    // }
+}

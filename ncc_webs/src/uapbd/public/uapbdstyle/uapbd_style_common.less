@@ -1,0 +1,263 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+/*定位容器*/
+.uapbd_style_center_container {
+    position: relative;
+    /*容器 子元素 未定义距离*/
+    .uapbd_style_center_undefined {
+        position: absolute;
+    }
+    /*容器 子元素 距离右边 20px*/
+    .uapbd_style_center_right20 {
+        position: absolute;
+        top: 0;
+        right: 20px;
+        bottom: 0;
+    }
+    /*容器 子元素 距离右边 20px*/
+    .uapbd_style_center_left20 {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 20px;
+    }
+}
+
+/*出现 滚动条 的容器*/
+.uapbd_style_scroll_container {
+    overflow: auto;
+}
+/*定义滚动条轨道*/
+.uapbd_style_scroll_container::-webkit-scrollbar-track { 
+    border-radius: 8px; 
+    background-color: white;
+}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/ 
+.uapbd_style_scroll_container::-webkit-scrollbar{
+    width: 8px;
+}
+/*定义滑块 内阴影+圆角*/
+.uapbd_style_scroll_container::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    width: 8px;
+    background-color: #d8d8d8;
+}
+
+.transfer_tree_container {
+    clear: both;
+    height: 90%;
+    width: 100%;
+    margin-top: 10px;
+    .left-area{
+        height: 100%;
+        display: inline-block;
+        vertical-align: top;
+        width: calc(~'50% - 91px');
+        overflow: auto;
+    }
+    .button-area{
+        height: 100%;
+        width: 50px;
+        display: inline-block;
+        vertical-align: middle;
+        padding-top: 30px;
+        text-align: center;
+        .opr-botton{
+            padding-top: 25px;
+            display: block;
+            margin: 0 auto;
+        }
+    }
+    .right-area{
+        height: 100%;
+        display: inline-block;
+        vertical-align: top;
+        width: calc(~'50% - 91px');
+        overflow: auto;
+    }
+    .transferSwitcherClassSelfNameHidden{
+        i {
+            visibility: hidden;
+        }
+    }
+    .left-area-tree,.right-area-tree{
+        .u-tree{
+            height: 360px;
+            overflow: auto;
+        }
+    }
+    .left-area-nei,.right-area-nei{
+        height: 100%;
+        border-radius:3px;
+        border:1px solid rgba(208,208,208,1);
+        background:rgba(255,255,255,1);
+    }
+    .opr-botton-trans{
+        button{
+            min-width: auto;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+        }
+    }
+}
+/*
+ * 这个是左树的 控制搜索框 宽度的。
+ */
+.NC_syncTreeSearch_self_width {
+    width: 240px!important;
+    .u-form-control-wrapper {
+        width: 240px!important;
+    }
+}
+/*
+ * 这个是左树中加虚线样式。
+ */
+ 
+.syncTreeComLineStyle {
+    .synctree-area {
+        .u-tree>li:only-child > ul:before {
+            border-left: none;
+        }
+        .u-tree>li > ul:last-child::before {
+            border-left: none;
+        }
+        .u-tree-child-tree-open > li::after {
+            position: absolute;
+            left: 8px;
+            top: -15px;
+            content: "";
+            display: inline-block;
+            width: 1px;
+            height: 28px;
+            border-left: 1px dashed #d0d0d0;
+        }
+        .node-item .u-tree-switcher {
+            position: relative;
+            z-index: 2;
+        }
+        li::after {
+            // position: absolute;
+            // left: 8px;
+            // top: -15px;
+            // content: "";
+            // display: inline-block;
+            // width: 1px;
+            // height: 28px;
+            // border-left: 1px dashed rgb(208, 208, 208);
+            border: none;
+        }
+        li {
+            position: relative;
+            .u-tree-switcher {
+                position: relative;
+            }
+            .u-tree-switcher::before {
+                position: absolute;
+                left: 11px;
+                top: 8px;
+                content: "";
+                display: inline-block;
+                width: 10px;
+                border-top: 1px dashed #d0d0d0;
+            }
+            // .isLeaf_show_point_line::before {
+            //     position: absolute;
+            //     left: 11px;
+            //     top: 8px;
+            //     content: "";
+            //     display: inline-block;
+            //     width: 10px;
+            //     border-top: 1px dashed #d0d0d0;
+            // }
+            // .isLeaf_hiden_point_line::before {
+            //     position: absolute;
+            //     left: 11px;
+            //     top: 8px;
+            //     content: "";
+            //     display: inline-block;
+            //     width: 10px;
+            //     border-top: 1px dashed #d0d0d0;
+            // }
+            .isLeaf_hiden_point_line>i::before {
+                visibility: hidden;
+            }
+        }
+    }
+}
+/*
+ * 穿梭树 线样式修改
+ */
+.syncTreeComTransferLineStyle {
+    .synctree-area {
+        .u-tree>li:only-child > ul:before {
+            border-left: none;
+        }
+        .u-tree>li > ul:last-child::before {
+            border-left: none;
+        }
+        .u-tree-child-tree-open > li::after {
+            position: absolute;
+            left: 8px;
+            top: -15px;
+            content: "";
+            display: inline-block;
+            width: 1px;
+            height: 28px;
+            border-left: 1px dashed #d0d0d0;
+        }
+        .node-item .u-tree-switcher {
+            position: relative;
+            z-index: 2;
+        }
+        li::after {
+            // position: absolute;
+            // left: 8px;
+            // top: -15px;
+            // content: "";
+            // display: inline-block;
+            // width: 1px;
+            // height: 28px;
+            // border-left: 1px dashed rgb(208, 208, 208);
+            border: none;
+        }
+        li {
+            position: relative;
+            .isLeaf_show_point_line::before {
+                position: absolute;
+                left: 11px;
+                top: 8px;
+                content: "";
+                display: inline-block;
+                width: 10px;
+                border-top: 1px dashed #d0d0d0;
+            }
+            .isLeaf_hiden_point_line::before {
+                position: absolute;
+                left: 11px;
+                top: 8px;
+                content: "";
+                display: inline-block;
+                width: 10px;
+                border-top: 1px dashed #d0d0d0;
+            }
+            .isLeaf_hiden_point_line>i::before {
+                visibility: hidden;
+            }
+        }
+    }
+}
+
+// 树结构编辑态下的选中效果
+.node-item-edit-point-style-self>a {
+    background-color: #ebedf2;
+}
+
+.node-item-edit-point-style-self>a span {
+    color: #e14c46!important;
+}
+.table-slef-set-long span {
+    margin-right: 0px!important;
+}

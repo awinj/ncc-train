@@ -1,0 +1,14 @@
+{
+  "api-print-0001": "您的浏览器阻止了弹出式窗口,请查看浏览器设置",
+  "api-print-0002": "未查询到任何模板信息",
+  "api-print-0003": "打印预览",
+  "api-print-0004": "模板ID参数为空",
+  "api-print-0005": "打印模板选择",
+  "api-print-0006": "确定",
+  "api-print-0007": "取消",
+  "api-print-0008": "选择模板",
+  "api-print-0009": "输出到文件",
+  "api-print-0010": "输出到EXCEL文件",
+  "api-print-0011": "输出到PDF文件",
+  "api-print-0012": "输出到HTML文件"
+}

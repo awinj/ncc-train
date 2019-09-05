@@ -1,0 +1,124 @@
+@color-solid:rgba(235, 235, 235, 1);
+@color-white: #fff;
+@color-primary:  #e14c46;
+@fullscreen-height: 620px;
+.tree-area-border{
+    border: 1px #ccc solid;
+    padding-left: 5px;
+}
+.transfer-main{
+    clear: both;
+    height: 380px;
+    width: 100%;
+    overflow: hidden;
+    min-height: 300px;
+    border: 1px @color-solid solid;
+    padding: 10px 5px;
+    .u-tree-searchable-filter{
+        color: red;
+    }
+    h2{
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    .icon-yonghu,.icon-yonghuzu{
+        color: rgb(66,165,245);
+        margin-left: -5px;
+        margin-right: 2px;
+    }
+    .search-content{
+        padding: 8px;
+        width: 100%;
+        input[type=search]::-webkit-search-cancel-button{
+            display: none;
+        }
+        input[type=search]::-ms-clear{
+            display: none;
+        }
+    }
+    .left-wrapper{
+        width: calc(~'50% - 91px');
+        float: left;
+        height: 100%;
+    }
+    .left-area{
+        display: inline-block;
+        vertical-align: top;
+        width: 100% !important;
+        overflow: hidden;
+        padding-bottom: 46px;
+        .tree-area-border;
+        .tree-box{
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            // padding-bottom: 45px;
+        }
+        &.fullscreen-left-area{
+            height: @fullscreen-height;
+        }
+    }
+    .button-area{
+        height: 100%;
+        width: 180px;
+        border-left: none;
+        border-right: none;
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        padding-top: 100px;
+        .opr-botton{
+            padding-top: 25px;
+            display: block;
+            margin: 0 auto;
+        }
+    }
+    .right-wrapper{
+        width: calc(~'50% - 91px');
+        float: right;
+        height: 100%;
+    }
+    .right-area{
+        width: 100% !important;
+        display: inline-block;
+        vertical-align: top;
+        overflow: hidden;
+        padding-bottom: 46px;
+        .tree-area-border;
+        .tree-box{
+            // padding-bottom: 45px;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        &.fullscreen-right-area{
+            height: @fullscreen-height;
+        }
+    }
+
+    &.fullscreen-transfer-main{
+        height: 100%;
+        padding-bottom: 20px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin: auto;
+    }
+
+    
+
+    .right-area .tree-box::-webkit-scrollbar,.left-area .tree-box::-webkit-scrollbar{/*整个滚动条区域的宽度*/
+        width:8px;
+    }
+    .right-area .tree-box::-webkit-scrollbar-button,.left-area .tree-box::-webkit-scrollbar-button{/*滚动条上下两边的按钮*/
+        display:none;
+    }
+    .right-area .tree-box::-webkit-scrollbar-thumb,.left-area .tree-box::-webkit-scrollbar-thumb{/*真滚动条样式*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background:rgba(0,0,0,0.34);
+        border-radius: 100px ;
+    }
+    .right-area .tree-box::-webkit-scrollbar-track,.left-area .tree-box::-webkit-scrollbar-track {/*滚动条滚动的轨道*/
+        display: none;
+    }
+}

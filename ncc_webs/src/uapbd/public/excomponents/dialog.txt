@@ -1,0 +1,62 @@
+dialog.js说明
+
+使用时  往props中传递的参数
+    1、
+
+                    showDialog: false,      //是否显示dialog
+                    dialogZIndex: '300',    //dialog的z-index
+                    dialogWidth: '60%',     //dialog的宽度
+                    dialogHeight: null,     //dialog的高度
+                    dialogTitle: null,      //dialog的标题
+                    showHeadButtonArea: false,//是否渲染头部的按钮区域
+                    sureButtonName:'确认',   //确认按钮的名称  有时叫  确定，有时叫 确认……
+                    cancelButtonName: '取消',//取消按钮的名称  有时叫  取消，有时叫 关闭  有时叫 退出……
+                    bottomAreaShow: true,   //显示底部区域（确认 取消 按钮区域）可能有的dialog不需要显示
+                    disabledDomScoll: true, //是否禁用document的滚动条
+
+    2、
+    listener：{
+        onBeforeDialogCloseOk:()=>{}, //弹出框关闭前事件 可选实现
+        onAfterDialogCloseOk: ()=>{}, //弹出框关闭后事件 可选实现
+        renderDialogContent： ()=>{}, //渲染弹出框的内容 必须实现
+        renderHeadButtons：   ()=>{}, //渲染头部区域的按钮  配合 showHeadButtonArea属性一起使用
+
+    }
+
+   使用：
+   1、引入 Dialog.js和 reactdom
+    定义参数：
+   let config = {
+               showDialog: false,      //是否显示dialog
+               dialogZIndex: '300',    //dialog的z-index
+               dialogWidth: '60%',     //dialog的宽度
+               dialogHeight: null,     //dialog的高度
+               dialogTitle: '这是自定义的dialog',      //dialog的标题
+               showHeadButtonArea: false,//是否渲染头部的按钮区域
+               sureButtonName:'确定',   //确认按钮的名称  有时叫  确定，有时叫 确认……
+               cancelButtonName: '关闭',//取消按钮的名称  有时叫  取消，有时叫 关闭  有时叫 退出……
+               bottomAreaShow: true,   //显示底部区域（确认 取消 按钮区域）可能有的dialog不需要显示
+               disabledDomScoll: true, //是否禁用document的滚动条
+               listener: {
+                   onBeforeDialogCloseOk: () => {
+                   },
+                   onAfterDialogCloseOk: () => {
+                   },
+                   renderDialogContent: () => {
+                   },
+                   renderHeadButtons: () => {
+                   },
+               }
+           }
+   2、ReactDOM.createPortal(<Dialog {...config} ref={(Dialog)=>{this.Dialog = Dialog}}/>,document.body); 写到父页面渲染方法中
+
+   可调用方法：
+        1、this.Dialog.setDialogTitle(titleName) 例如:  '供应商'
+        2、this.Dialog.setDialogZIndex(zIndex)   例如:  '999'
+        3、this.Dialog.showDialog(isShow,disabledDomScoll)
+        4、this.Dialog.setDialogSize(width,height)
+        5、this.Dialog.onDialogClose(disabledDomScoll) 关闭dialog
+        6、this.Dialog.onDialogCloseOk()
+
+
+有需要补充，请及时联系我liupzhc@yonyou.com

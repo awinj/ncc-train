@@ -1,0 +1,26 @@
+@import '../helpers/_index.less';
+.master-table{//modal下上下主子表修复
+    .u-table-placeholder{
+        .centerVertical(100);
+    }
+}
+.lfrt-table{//model左右table修复
+    .u-table-scroll{
+        max-height: 330px;
+    }
+    .u-table-placeholder{
+        .centerVertical(100);
+    }
+    .u-table-content .u-table-fixed-left{
+        display: none;
+    }
+}
+.refer-pop-window.master-table .u-table-scroll{
+    overflow: initial !important;
+}
+.refer-pop-window.master-table .u-table .u-table-body{
+    min-height: 200px !important;
+    height: 35px !important;
+}
+
+

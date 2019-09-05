@@ -1,0 +1,138 @@
+@import "./../themes/_index.less";
+
+//元素定位
+.centerVertical(@zIndex){
+  position: absolute;
+  top:50%;
+  left: 50%;
+  z-index: @zIndex;
+  transform: translate(-50%,-50%);
+}
+.notStatic(@top:auto,@right:auto,@bottom:auto,@left:auto,@zIndex:1, @position: absolute) {
+  position: @position;
+  z-index: @zIndex;
+  top:@top;
+  right: @right;
+  bottom: @bottom;
+  left: @left;
+}
+.freeAbsoPos(@top:auto,@right:auto,@bottom:auto,@left:auto,@zIndex:1){
+  position: absolute;
+  z-index: @zIndex;
+  top:@top;
+  right: @right;
+  bottom: @bottom;
+  left: @left;
+}
+.absoPosCenterHor(@top: auto, @zIndex: 1) {
+  .notStatic(@top, auto, auto, 50%, @zIndex, absolute);
+  transform: translateX(-50%);
+}
+.absoPosCenterVer(@left:auto, @zIndex: 1) {
+  .notStatic(50%, auto, auto, @left, @zIndex: 1);
+  transform: translateY(-50%);
+}
+.absoPosCenter(@zIndex:1) {
+  .freeAbsoPos(50%,auto,auto,50%,@zIndex);
+  transform: translate(-50%, -50%);
+}
+.freeFixPos(@top:auto, @right: auto, @bottom: auto, @left: auto, @zIndex: 1){
+  position: fixed;
+  z-index: @zIndex;
+  top: @top;
+  right: @right;
+  bottom: @bottom;
+  left: @left;
+}
+
+.borRadius(@radius:50%){
+  border-radius: @radius;
+}
+//单行及多行文本溢出控制
+.doubleLimitWidth(@num:2){
+  display: -webkit-box !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp:@num;
+}
+
+//浏览器默认滚动条设置
+.scrollBar {
+  &::-webkit-scrollbar-track-piece {
+    background: #d3dce6;
+  }
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #99a9bf;
+    border-radius: 20px;
+  }
+}
+
+// 相对定位并水平居中
+.pct(@pct) {
+  width: @pct;
+  position: relative;
+  margin: 0 auto;
+}
+
+// 三角形绘制
+.triangle(@width, @height, @color, @direction) when (@direction = 'up') {
+    @width: @width/2;
+    @color-border-style: @height solid @color;
+    @transparent-border-style: @width solid transparent;
+    height: 0;
+    width: 0;
+    border-bottom: @color-border-style;
+    border-left: @transparent-border-style;
+    border-right: @transparent-border-style;
+}
+.triangle(@width, @height, @color, @direction) when (@direction = 'right') {
+    @width: @width/2;
+    @color-border-style: @height solid @color;
+    @transparent-border-style: @width solid transparent;
+    height: 0;
+    width: 0;
+    border-left: @color-border-style;
+    border-top: @transparent-border-style;
+    border-bottom: @transparent-border-style;
+}
+.triangle(@width, @height, @color, @direction) when (@direction = 'down') {
+    @width: @width/2;
+    @color-border-style: @height solid @color;
+    @transparent-border-style: @width solid transparent;
+    height: 0;
+    width: 0;
+    border-top: @color-border-style;
+    border-left: @transparent-border-style;
+    border-right: @transparent-border-style;
+}
+.triangle(@width, @height, @color, @direction) when (@direction = 'left') {
+    @width: @width/2;
+    @color-border-style: @height solid @color;
+    @transparent-border-style: @width solid transparent;
+    height: 0;
+    width: 0;
+    border-right: @color-border-style;
+    border-top: @transparent-border-style;
+    border-bottom: @transparent-border-style;
+}
+
+.content-add(@left:0,@top:0,@width:2px,@height:2px,@backgroundColor: #ddd,@borderRadius: 50%){
+  position: relative;
+  &::before{
+    position: absolute;
+    z-index: 10;
+    display: block;
+    content: ' ';
+    left: @left;
+    top: @top;
+    width: @width;
+    height: @height;
+    background-color: @backgroundColor;
+    border-radius: @borderRadius;
+  }
+}
