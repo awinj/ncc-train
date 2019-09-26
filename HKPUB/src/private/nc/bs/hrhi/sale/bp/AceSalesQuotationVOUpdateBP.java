@@ -1,10 +1,9 @@
 
-package nc.bs.hk.pub.ace.bp;
+package nc.bs.hrhi.sale.bp;
 
-import nc.bs.hk.pub.plugin.bpplugin.SalesQuotationVOPluginPoint;
+import nc.bs.hrhi.plugin.bpplugin.SalesQuotationVOPluginPoint;
 import nc.impl.pubapp.pattern.data.bill.template.UpdateBPTemplate;
 import nc.impl.pubapp.pattern.rule.processer.CompareAroundProcesser;
-import nc.impl.pubapp.pattern.rule.IRule;
 import nc.vo.hrhi.sale.AggSalesQuotationVO;
 
 /**
@@ -18,9 +17,9 @@ public class AceSalesQuotationVOUpdateBP {
         UpdateBPTemplate<AggSalesQuotationVO> bp = new UpdateBPTemplate<AggSalesQuotationVO>(
                 SalesQuotationVOPluginPoint.UPDATE);
         // 执行前规则
-        this.addBeforeRule(bp.getAroundProcesser());
+//        this.addBeforeRule(bp.getAroundProcesser());
         // 执行后规则
-        this.addAfterRule(bp.getAroundProcesser());
+//        this.addAfterRule(bp.getAroundProcesser());
         return bp.update(bills, originBills);
     }
 

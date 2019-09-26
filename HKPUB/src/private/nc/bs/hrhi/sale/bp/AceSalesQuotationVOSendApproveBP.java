@@ -1,5 +1,5 @@
 
-package nc.bs.hk.pub.ace.bp;
+package nc.bs.hrhi.sale.bp;
 
 import nc.impl.pubapp.pattern.data.bill.BillUpdate;
 import nc.vo.hrhi.sale.AggSalesQuotationVO;

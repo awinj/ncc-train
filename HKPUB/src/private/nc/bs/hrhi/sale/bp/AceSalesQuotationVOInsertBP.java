@@ -1,7 +1,7 @@
 
-package nc.bs.hk.pub.ace.bp;
+package nc.bs.hrhi.sale.bp;
 
-import nc.bs.hk.pub.plugin.bpplugin.SalesQuotationVOPluginPoint;
+import nc.bs.hrhi.plugin.bpplugin.SalesQuotationVOPluginPoint;
 import nc.impl.pubapp.pattern.data.bill.template.InsertBPTemplate;
 import nc.impl.pubapp.pattern.rule.processer.AroundProcesser;
 import nc.impl.pubapp.pattern.rule.IRule;

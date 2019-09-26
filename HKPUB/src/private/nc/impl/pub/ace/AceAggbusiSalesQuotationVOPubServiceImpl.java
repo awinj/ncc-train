@@ -1,13 +1,13 @@
 
 package nc.impl.pub.ace;
 
-import nc.bs.hk.pub.ace.bp.AceSalesQuotationVOApproveBP;
-import nc.bs.hk.pub.ace.bp.AceSalesQuotationVODeleteBP;
-import nc.bs.hk.pub.ace.bp.AceSalesQuotationVOInsertBP;
-import nc.bs.hk.pub.ace.bp.AceSalesQuotationVOSendApproveBP;
-import nc.bs.hk.pub.ace.bp.AceSalesQuotationVOUnApproveBP;
-import nc.bs.hk.pub.ace.bp.AceSalesQuotationVOUnSendApproveBP;
-import nc.bs.hk.pub.ace.bp.AceSalesQuotationVOUpdateBP;
+import nc.bs.hrhi.sale.bp.AceSalesQuotationVOApproveBP;
+import nc.bs.hrhi.sale.bp.AceSalesQuotationVODeleteBP;
+import nc.bs.hrhi.sale.bp.AceSalesQuotationVOInsertBP;
+import nc.bs.hrhi.sale.bp.AceSalesQuotationVOSendApproveBP;
+import nc.bs.hrhi.sale.bp.AceSalesQuotationVOUnApproveBP;
+import nc.bs.hrhi.sale.bp.AceSalesQuotationVOUnSendApproveBP;
+import nc.bs.hrhi.sale.bp.AceSalesQuotationVOUpdateBP;
 import nc.impl.pubapp.pattern.data.bill.BillLazyQuery;
 import nc.impl.pubapp.pattern.data.bill.tool.BillTransferTool;
 import nc.ui.querytemplate.querytree.IQueryScheme;

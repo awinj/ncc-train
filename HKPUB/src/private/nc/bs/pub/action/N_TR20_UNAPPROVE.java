@@ -2,7 +2,7 @@
 package nc.bs.pub.action;
 
 import nc.bs.framework.common.NCLocator;
-import nc.bs.hk.pub.plugin.bpplugin.SalesQuotationVOPluginPoint;
+import nc.bs.hrhi.plugin.bpplugin.SalesQuotationVOPluginPoint;
 import nc.bs.pubapp.pf.action.AbstractPfAction;
 import nc.bs.pubapp.pub.rule.UnapproveStatusCheckRule;
 import nc.impl.pubapp.pattern.rule.processer.CompareAroundProcesser;

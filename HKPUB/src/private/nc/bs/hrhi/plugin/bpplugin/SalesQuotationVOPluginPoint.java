@@ -1,5 +1,5 @@
 
-package nc.bs.hk.pub.plugin.bpplugin;
+package nc.bs.hrhi.plugin.bpplugin;
 
 import nc.impl.pubapp.pattern.rule.plugin.IPluginPoint;
 

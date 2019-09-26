@@ -5,5 +5,9 @@
           <interface>nc.itf.hk.pub.ISalesquotationvoMaintain</interface>
           <implementation>nc.impl.hk.pub.SalesquotationvoMaintainImpl</implementation>
         </component>
+         <component remote="true" singleton="true"  tx="CMT">
+                  <interface>nc.itf.hk.pub.IDataOperationService</interface>
+                  <implementation>nc.impl.hk.pub.DataOperationServiceImpl</implementation>
+          </component>
   </public>
 </module>
