@@ -5,9 +5,9 @@ import nc.vo.pubapp.pattern.model.entity.bill.IBill;
 
 public interface IDataOperationService {
 
-    IBill[] insert(IBill[] paramArrayOfIBill) throws BusinessException;
+    IBill[] insert(IBill[] aggvos) throws BusinessException;
 
-    IBill[] update(IBill[] paramArrayOfIBill) throws BusinessException;
+    IBill[] update(IBill[] aggvos) throws BusinessException;
 
-    IBill[] delete(IBill[] paramArrayOfIBill) throws BusinessException;
+    IBill[] delete(IBill[] aggvos) throws BusinessException;
 }

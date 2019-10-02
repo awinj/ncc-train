@@ -1,6 +1,6 @@
 package nc.bs.hk.pub.bp.bd;
 
-import nc.bs.hk.pub.bpplugin.JZBasePluginPoint;
+import nc.bs.hk.pub.bpplugin.BasePluginPoint;
 import nc.bs.hk.pub.rule.AbstractBDExtendRuleChain;
 import nc.impl.pubapp.pattern.data.bill.template.DeleteBPTemplate;
 import nc.impl.pubapp.pattern.rule.IRule;
@@ -27,7 +27,7 @@ public class BDDeleteBP<T extends AbstractBill> {
     }
 
     public void delete(T[] bills) {
-        DeleteBPTemplate bp = new DeleteBPTemplate(JZBasePluginPoint.DELETE);
+        DeleteBPTemplate bp = new DeleteBPTemplate(BasePluginPoint.DELETE);
 
         addBeforeRule(bp.getAroundProcesser());
 

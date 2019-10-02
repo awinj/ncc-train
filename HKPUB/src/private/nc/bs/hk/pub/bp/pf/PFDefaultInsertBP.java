@@ -1,10 +1,10 @@
 package nc.bs.hk.pub.bp.pf;
  
- import nc.bs.hk.pub.bp.JZBaseAbstractInsertBP;
+ import nc.bs.hk.pub.bp.BaseAbstractInsertBP;
  import nc.impl.pubapp.pattern.rule.processer.AroundProcesser;
  import nc.vo.pubapp.pattern.model.entity.bill.AbstractBill;
  
- public class PFDefaultInsertBP<T extends AbstractBill> extends JZBaseAbstractInsertBP<T>
+ public class PFDefaultInsertBP<T extends AbstractBill> extends BaseAbstractInsertBP<T>
  {
    protected void addAfterRule(AroundProcesser<T> processor)
    {

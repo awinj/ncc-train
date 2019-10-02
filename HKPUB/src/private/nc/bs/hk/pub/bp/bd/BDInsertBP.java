@@ -1,6 +1,6 @@
 package nc.bs.hk.pub.bp.bd;
 
-import nc.bs.hk.pub.bpplugin.JZBasePluginPoint;
+import nc.bs.hk.pub.bpplugin.BasePluginPoint;
 import nc.bs.hk.pub.rule.AbstractBDExtendRuleChain;
 import nc.bs.pubapp.pub.rule.FieldLengthCheckRule;
 import nc.bs.pubapp.pub.rule.FillInsertDataRule;
@@ -33,7 +33,7 @@ public class BDInsertBP<T extends AbstractBill> {
     }
 
     public T[] insert(T[] bills) throws BusinessException {
-        InsertBPTemplate bp = new InsertBPTemplate(JZBasePluginPoint.INSERT);
+        InsertBPTemplate bp = new InsertBPTemplate(BasePluginPoint.INSERT);
         addBeforeRule(bp.getAroundProcesser());
         addAfterRule(bp.getAroundProcesser());
         return (T[]) bp.insert(bills);

@@ -4,19 +4,22 @@ import nc.bs.logging.Logger;
 import nc.itf.hk.pub.IDataOperationService;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.CircularlyAccessibleValueObject;
-import nc.vo.pub.IColumnMeta;
 import nc.vo.pubapp.pattern.model.entity.bill.AbstractBill;
 import nc.vo.pubapp.pattern.model.entity.bill.IBill;
 import nccloud.framework.core.exception.ExceptionUtils;
 import nccloud.framework.service.ServiceLocator;
-import nccloud.framework.web.action.itf.ICommonAction;
 import nccloud.framework.web.container.IRequest;
 import nccloud.framework.web.ui.pattern.billcard.BillCardOperator;
+import nccloud.web.hk.pub.action.NCCAction;
 import nccloud.web.hk.pub.util.CommonUtil;
 
 import java.util.Collection;
 
-public abstract class BDSaveAction extends NCCAction {
+/**
+ * 普通的保存，不涉及平台动作脚本
+ * @param <T>
+ */
+public abstract class BDSaveAction<T extends AbstractBill> extends NCCAction {
 
 
     @Override
@@ -66,9 +69,9 @@ public abstract class BDSaveAction extends NCCAction {
         String wheresql =
                 parentPkFiled + "='"
                         + ((AbstractBill) result[0]).getPrimaryKey() + "'";
-        Collection<AbstractBill> bills =
+        Collection<T> bills =
                 CommonUtil.getMDQueryService().queryBillOfVOByCond(
-                        aggVOs[0].getClass(), wheresql, true, false);
+                        getAggVO().getClass(), wheresql, true, false);
         return bills.toArray(new AbstractBill[0])[0];
     }
 

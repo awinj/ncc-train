@@ -2,31 +2,26 @@
 package nccloud.web.hk.pub.util;
 
 
-import nc.itf.hk.pub.ISalesquotationvoMaintain;
+import nc.itf.hk.pub.IBaseMaintainService;
 import nc.md.persist.framework.IMDPersistenceQueryService;
-import nc.vo.trainncc.demo.SalesQuotationVOConst;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDateTime;
 import nccloud.framework.service.ServiceLocator;
 import nccloud.framework.web.container.SessionContext;
 import nccloud.pubitf.riart.pflow.ICloudScriptPFlowService;
+import nccloud.web.hk.pub.action.NCCAction;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public class CommonUtil {
 
-    private static ISalesquotationvoMaintain maintain = null;
+    private static IBaseMaintainService maintain = null;
 
     private static IMDPersistenceQueryService persistenceQueryService = null;
 
     private static ICloudScriptPFlowService PFlowService = null;
 
-    /**
-     * 单据类型编码
-     *
-     * @return
-     */
-    public static String getBillTypeCode() {
-        return SalesQuotationVOConst.CONST_BILLTYPE_COST;
-    }
 
 
     /**
@@ -67,9 +62,9 @@ public class CommonUtil {
      *
      * @return
      */
-    public static ISalesquotationvoMaintain getMaintainService() {
+    public static IBaseMaintainService getMaintainService() {
         if (CommonUtil.maintain == null) {
-            CommonUtil.maintain = ServiceLocator.find(ISalesquotationvoMaintain.class);
+            CommonUtil.maintain = ServiceLocator.find(IBaseMaintainService.class);
         }
         return CommonUtil.maintain;
     }
@@ -86,6 +81,7 @@ public class CommonUtil {
         }
         return CommonUtil.persistenceQueryService;
     }
+
 
 
 }

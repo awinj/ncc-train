@@ -27,7 +27,4 @@ class List extends React.Component {
 
 
 export default createPage({
-    billinfo: {
-        configExt: configExt
-    }
 })(List)

@@ -2,25 +2,25 @@
 package nccloud.web.hk.pub.action.pf;
 
 import nc.bs.logging.Logger;
+import nc.md.model.MetaDataException;
 import nc.vo.hrhi.sale.AggSalesQuotationVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.CircularlyAccessibleValueObject;
-import nc.vo.pub.IColumnMeta;
 import nc.vo.pubapp.pattern.model.entity.bill.AbstractBill;
 import nccloud.framework.core.exception.ExceptionUtils;
-import nccloud.framework.service.ServiceLocator;
-import nccloud.framework.web.action.itf.ICommonAction;
 import nccloud.framework.web.container.IRequest;
 import nccloud.framework.web.ui.pattern.billcard.BillCardOperator;
-import nccloud.pubitf.riart.pflow.CloudPFlowContext;
-import nccloud.pubitf.riart.pflow.ICloudScriptPFlowService;
+import nccloud.web.hk.pub.action.PFNCCAction;
+import nccloud.web.hk.pub.util.CommonUtil;
+
+import java.util.Collection;
 
 /**
- * 主子表保存
+ * 调用平台脚本，保存主子表
  *
  * @version @since v3.5.6-1903
  */
-public abstract class PFSaveAction implements ICommonAction {
+public abstract class PFSaveAction<T extends AbstractBill> extends PFNCCAction<T> {
 
 
     @Override
@@ -28,10 +28,10 @@ public abstract class PFSaveAction implements ICommonAction {
         try {
             BillCardOperator billCardOperator = new BillCardOperator();
             // 1、获取AGGVO （request转换主子VO）
-            AggSalesQuotationVO vo = billCardOperator.toBill(paramIRequest);
+            T vo = billCardOperator.toBill(paramIRequest);
 //            this.doBefore(vo);
             // 2、调用单据的保存动作脚本（savebase），得到保存后结果
-            AbstractBill rtnObj = this.callActionScript(vo);
+            T rtnObj = callActionScript(vo);
             // 3、处理返回结果（包含功能：根据模板转换前端BillCard，参照翻译，显示公式处理）
             Object billcard = billCardOperator.toCard(rtnObj);
             // 4、返回结果到前端
@@ -53,49 +53,7 @@ public abstract class PFSaveAction implements ICommonAction {
         return "SAVEBASE";
     }
 
-    protected abstract String getBillType();
 
-    /**
-     * 调用动作脚本
-     *
-     * @param
-     * @param aggVOs
-     * @return
-     * @throws BusinessException
-     */
-    private AbstractBill callActionScript(AggSalesQuotationVO... aggVOs)
-            throws BusinessException {
-
-        String actionCode = this.getActionCode();
-        String billType = getBillType();
-
-
-
-
-        CloudPFlowContext context = new CloudPFlowContext();
-        context.setActionName(actionCode);
-        context.setBillType(billType);
-        context.setBillVos(aggVOs);
-        Logger.debug("开始调用动作脚本 ActionName[" + actionCode + "] BillType[" + billType
-                + "]...");
-
-        ICloudScriptPFlowService service =
-                ServiceLocator.find(ICloudScriptPFlowService.class);
-
-        Object[] result = service.exeScriptPFlow(context);
-
-        Logger.debug("调用动作脚本 ActionName[" + actionCode + "] BillType[" + billType
-                + "]结束");
-
-//        String parentPkFiled = getPrimaryField(aggVOs[0]);
-//        String wheresql =
-//                parentPkFiled + "='"
-//                        + ((AggSalesQuotationVO) result[0]).getPrimaryKey() + "'";
-//        Collection<AggSalesQuotationVO> bills =
-//                CommonUtil.getMDQueryService().queryBillOfVOByCond(
-//                        AggSalesQuotationVO.class, wheresql, true, false);
-        return (AbstractBill) result[0];
-    }
 
     /**
      * 判断新增或修改
@@ -104,7 +62,7 @@ public abstract class PFSaveAction implements ICommonAction {
      */
     private void doBefore(AggSalesQuotationVO vo) {
         String parentPk = vo.getPrimaryKey();
-        String parentPkFiled = getPrimaryField(vo);
+        String parentPkFiled = getPrimaryField();
         // 根据是否有主键信息判断是新增保存还是修改保存
         if ((parentPk != null) && !"".equals(parentPk)) {
             // 设置单据默认值
@@ -117,13 +75,23 @@ public abstract class PFSaveAction implements ICommonAction {
         }
     }
 
-    //暂时认为子表存主表主键的字段与主表的主键字段名称一致。后续优化
-    private String getPrimaryField(AbstractBill aggvo) {
-        IColumnMeta column = aggvo.getParent().getMetaData().getPrimaryAttribute().getColumn();
-        if (column != null) {
-            return column.getName();
-        }
-        return null;
+    @Override
+    protected T callActionScript(T... aggVOs) throws BusinessException {
+
+        return refresh(super.callActionScript(aggVOs));
+
     }
+
+    private T refresh(AbstractBill aggvo) throws MetaDataException {
+        String parentPkFiled = getPrimaryField();
+        String wheresql =
+                parentPkFiled + "='"
+                        + aggvo.getPrimaryKey() + "'";
+        Collection<T> bills =
+                CommonUtil.getMDQueryService().queryBillOfVOByCond(
+                        getAggVO().getClass(), wheresql, true, false);
+        return (T) bills.toArray(new AbstractBill[0])[0];
+    }
+
 
 }

@@ -3,29 +3,29 @@
     <action>
         <name>hk.action.save</name>
         <label>保存</label>
-        <clazz>nccloud.web.hk.pub.action.SaveAction</clazz>
+        <clazz>nccloud.web.hrhi.sale.action.SaveAction</clazz>
     </action>
     <action>
         <name>hk.action.delete</name>
         <label>删除</label>
-        <clazz>nccloud.web.hk.pub.action.DeleteAction</clazz>
+        <clazz>nccloud.web.hrhi.sale.action.DeleteAction</clazz>
     </action>
     <action>
         <name>hk.action.querypage</name>
         <label>列表查询</label>
-        <clazz>nccloud.web.hk.pub.action.QueryListAction
+        <clazz>nccloud.web.hrhi.sale.action.QueryListAction
         </clazz>
     </action>
     <action>
         <name>hk.action.querypagebypk</name>
         <label>分页查询</label>
-        <clazz>nccloud.web.hk.pub.action.QueryByPksAction
+        <clazz>nccloud.web.hrhi.sale.action.QueryByPksAction
         </clazz>
     </action>
     <action>
         <name>hk.action.querycard</name>
         <label>卡片查询</label>
-        <clazz>nccloud.web.hk.pub.action.QueryCardAction
+        <clazz>nccloud.web.hrhi.sale.action.QueryCardAction
         </clazz>
     </action>
 

@@ -1,6 +1,6 @@
 package nc.bs.hk.pub.bp.bd;
 
-import nc.bs.hk.pub.bpplugin.JZBasePluginPoint;
+import nc.bs.hk.pub.bpplugin.BasePluginPoint;
 import nc.bs.hk.pub.rule.AbstractBDExtendRuleChain;
 import nc.bs.pubapp.pub.rule.FieldLengthCheckRule;
 import nc.bs.pubapp.pub.rule.FillUpdateDataRule;
@@ -31,7 +31,7 @@ public class BDUpdateBP<T extends AbstractBill> {
     }
 
     public T[] update(T[] bills, T[] originBills) {
-        UpdateBPTemplate bp = new UpdateBPTemplate(JZBasePluginPoint.UPDATE);
+        UpdateBPTemplate bp = new UpdateBPTemplate(BasePluginPoint.UPDATE);
 
         addBeforeRule(bp.getAroundProcesser());
 
