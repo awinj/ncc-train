@@ -9,10 +9,6 @@ import nc.vo.pub.lang.UFDateTime;
 import nccloud.framework.service.ServiceLocator;
 import nccloud.framework.web.container.SessionContext;
 import nccloud.pubitf.riart.pflow.ICloudScriptPFlowService;
-import nccloud.web.hk.pub.action.NCCAction;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 public class CommonUtil {
 

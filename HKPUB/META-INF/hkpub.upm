@@ -2,10 +2,6 @@
 <module name="hk">
     <public>
         <component remote="true" singleton="true"  tx="CMT">
-            <interface>nc.itf.hrhi.sale.ISalesquotationvoMaintain</interface>
-            <implementation>nc.impl.hk.pub.SalesquotationvoMaintainImpl</implementation>
-        </component>
-        <component remote="true" singleton="true"  tx="CMT">
             <interface>nc.itf.hk.pub.IDataOperationService</interface>
             <implementation>nc.impl.hk.pub.DataOperationImpl</implementation>
         </component>

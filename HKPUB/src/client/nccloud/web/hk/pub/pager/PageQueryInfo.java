@@ -1,11 +1,7 @@
 
 package nccloud.web.hk.pub.pager;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Map;
-
-import nc.vo.pub.lang.UFDate;
 
 /**
  * 单条或多条数据查询用
