@@ -6,18 +6,18 @@
       <sourceFolder url="file://$MODULE_DIR$/src/client" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/private" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/public" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="1.8_1911" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="nc.uap.mde.library.container/Ant_Library" level="project" />
-    <orderEntry type="library" name="nc.uap.mde.library.container/Product_Common_Library" level="project" />
-    <orderEntry type="library" name="nc.uap.mde.library.container/Middleware_Library" level="project" />
-    <orderEntry type="library" name="nc.uap.mde.library.container/Framework_Library" level="project" />
-    <orderEntry type="library" name="nc.uap.mde.library.container/Module_Public_Library" level="project" />
-    <orderEntry type="library" name="nc.uap.mde.library.container/Module_Client_Library" level="project" />
-    <orderEntry type="library" name="nc.uap.mde.library.container/Module_Private_Library" level="project" />
-    <orderEntry type="library" name="nc.uap.mde.library.container/Module_Lang_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/Ant_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/Product_Common_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/Middleware_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/Framework_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/Module_Public_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/Module_Client_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/Module_Private_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/Module_Lang_Library" level="project" />
+    <orderEntry type="library" name="com.yonyou.studio.udt.core.container/NCCloud_Library" level="project" />
     <orderEntry type="library" name="nc.uap.mde.library.container/Generated_EJB" level="project" />
     <orderEntry type="library" name="resources" level="project" />
   </component>

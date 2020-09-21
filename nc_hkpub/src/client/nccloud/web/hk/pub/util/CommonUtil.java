@@ -2,7 +2,7 @@
 package nccloud.web.hk.pub.util;
 
 
-import nc.itf.hk.pub.IBaseMaintainService;
+import nccloud.itf.hk.pub.IBaseMaintainService;
 import nc.md.persist.framework.IMDPersistenceQueryService;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDateTime;

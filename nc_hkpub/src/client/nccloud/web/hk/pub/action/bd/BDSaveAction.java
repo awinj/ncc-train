@@ -1,7 +1,7 @@
 package nccloud.web.hk.pub.action.bd;
 
 import nc.bs.logging.Logger;
-import nc.itf.hk.pub.IDataOperationService;
+import nccloud.itf.hk.pub.IDataOperationService;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.CircularlyAccessibleValueObject;
 import nc.vo.pubapp.pattern.model.entity.bill.AbstractBill;
@@ -27,7 +27,7 @@ public abstract class BDSaveAction<T extends AbstractBill> extends NCCAction {
         try {
             BillCardOperator billCardOperator = new BillCardOperator();
             // 1、获取AGGVO （request转换主子VO）
-            AbstractBill vo = billCardOperator.toBill(paramIRequest);
+            T vo = billCardOperator.toBill(paramIRequest);
             this.doBefore(vo);
             // 2、调用单据的保存动作脚本（savebase），得到保存后结果
             AbstractBill rtnObj = doSave(vo);
@@ -52,17 +52,17 @@ public abstract class BDSaveAction<T extends AbstractBill> extends NCCAction {
      * @return
      * @throws BusinessException
      */
-    private AbstractBill doSave(AbstractBill... aggVOs)
+    protected AbstractBill doSave(T aggVO)
             throws BusinessException {
 
 
-        String pk = aggVOs[0].getParentVO().getPrimaryKey();
+        String pk = aggVO.getParentVO().getPrimaryKey();
         String parentPkFiled = getPrimaryField();
         IBill[] result;
         if (pk == null) {
-            result = ServiceLocator.find(IDataOperationService.class).insert(aggVOs);
+            result = ServiceLocator.find(IDataOperationService.class).insert(new AbstractBill[]{aggVO} );
         } else {
-            result = ServiceLocator.find(IDataOperationService.class).update(aggVOs);
+            result = ServiceLocator.find(IDataOperationService.class).update(new AbstractBill[]{aggVO});
         }
 
 

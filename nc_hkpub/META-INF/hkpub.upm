@@ -2,12 +2,12 @@
 <module name="hk">
     <public>
         <component remote="true" singleton="true"  tx="CMT">
-            <interface>nc.itf.hk.pub.IDataOperationService</interface>
-            <implementation>nc.impl.hk.pub.DataOperationImpl</implementation>
+            <interface>nccloud.itf.hk.pub.IDataOperationService</interface>
+            <implementation>nccloud.impl.hk.pub.DataOperationImpl</implementation>
         </component>
         <component remote="true" singleton="true"  tx="CMT">
-            <interface>nc.itf.hk.pub.IBaseMaintainService</interface>
-            <implementation>nc.impl.hk.pub.BaseMaintainImpl</implementation>
+            <interface>nccloud.itf.hk.pub.IBaseMaintainService</interface>
+            <implementation>nccloud.impl.hk.pub.BaseMaintainImpl</implementation>
         </component>
     </public>
 </module>

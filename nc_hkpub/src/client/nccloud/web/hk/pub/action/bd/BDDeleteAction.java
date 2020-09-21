@@ -1,7 +1,7 @@
 package nccloud.web.hk.pub.action.bd;
 
 import nc.bs.logging.Logger;
-import nc.itf.hk.pub.IDataOperationService;
+import nccloud.itf.hk.pub.IDataOperationService;
 import nc.md.model.MetaDataException;
 import nc.md.persist.framework.IMDPersistenceQueryService;
 import nc.vo.pf.pub.util.SQLUtil;

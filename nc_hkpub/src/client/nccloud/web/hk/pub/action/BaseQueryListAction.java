@@ -30,6 +30,8 @@ public abstract class BaseQueryListAction<T extends AbstractBill> extends NCCAct
         PageQueryVO page = null;
         QueryTreeFormatVO queryParam = (QueryTreeFormatVO) getQueryParam(paramIRequest);
 
+        //增加特殊条件
+        addSpecialCondition(queryParam);
         try {
 
             // 1、 获取scheme
@@ -118,10 +120,7 @@ public abstract class BaseQueryListAction<T extends AbstractBill> extends NCCAct
         info.getPageInfo().setPageIndex("0");
         List<AbstractBill> billLst = new ArrayList<AbstractBill>();
         for (int i = 0; (i < aggvos.length) && (i < pageSize); i++) {
-            AbstractBill bill = getAggVO();
-
-            bill.setParent(aggvos[i].getParent());
-            billLst.add(bill);
+            billLst.add(aggvos[i]);
         }
         return billLst.toArray(new AbstractBill[0]);
     }
@@ -233,5 +232,17 @@ public abstract class BaseQueryListAction<T extends AbstractBill> extends NCCAct
             grid = this.pageSet(grid, pagevo, pageSize, pageIndex);
         }
         return grid;
+    }
+
+
+    protected void addSpecialCondition(QueryTreeFormatVO queryParam){
+//        Condition condition=new Condition();
+//        condition.setField("creator");
+//        condition.setOprtype("=");
+//        condition.setLogic("and");
+//        Value value=new Value();
+//        value.setFirstvalue("0001");
+//        condition.setValue(value);
+//        queryParam.getQuerycondition().getConditions().add(condition);
     }
 }

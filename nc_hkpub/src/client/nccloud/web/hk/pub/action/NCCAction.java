@@ -19,8 +19,8 @@ public abstract class NCCAction<T extends AbstractBill> implements ICommonAction
     private T tmpAggVO;
     public NCCAction(){
 
-        Class clzz=ReflectUtil.getActualTypeArgument(getClass());
-        tmpAggVO= (T) ReflectUtil.newInstance(clzz);
+        Class clazz=ReflectUtil.getActualTypeArgument(getClass());
+        tmpAggVO= (T) ReflectUtil.newInstance(clazz);
     }
 
 
