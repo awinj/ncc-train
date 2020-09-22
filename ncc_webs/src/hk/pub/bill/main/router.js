@@ -1,6 +1,6 @@
 import { asyncComponent } from 'nc-lightapp-front';
-import List from '../components/list';
-import Card from '../components/card';
+import List from '../components/list/listpage';
+import Card from '../components/card/cardpage';
 
 /**
 * @description: 页面路由
