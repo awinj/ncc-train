@@ -1,5 +1,5 @@
 import React from 'react'
-import {createPage, createPageIcon} from 'nc-lightapp-front';
+import {createPage, createPageIcon, ajax, toast} from 'nc-lightapp-front';
 
 class BookComp extends React.Component {
 
@@ -8,7 +8,7 @@ class BookComp extends React.Component {
     }
 
     componentWillMount() {
-        this.initTemplate(this.props,{});
+        this.initTemplate(this.props, {});
     }
 
     initTemplate = (props, json) => {
@@ -21,8 +21,7 @@ class BookComp extends React.Component {
                         //将请求回来的按钮组数据设置到页面的 buttons 属性上
                         let button = data.button;
                         props.button.setButtons(button);
-                        props.button.setPopContent('delete', '确认要删除吗?');
-                        props.button.setButtonsVisible({'save':false});
+                        props.button.setButtonsVisible({'save': false, 'cancel': false});
                     }
                     if (data.template) {
                         let meta = data.template;
@@ -36,11 +35,11 @@ class BookComp extends React.Component {
                             className: "table-opr",
                             visible: true,
                             render: (text, record, index) => {
-                                let buttonAry =  ['edit', 'delete'];
+                                let buttonAry = ['tab_add', 'tab_del'];
                                 return props.button.createOprationButton(buttonAry, {
-                                    area: 'table',
+                                    area: 'tab',
                                     buttonLimit: 3,
-                                    onButtonClick: (props, key) => bodyButtonClick({ ...props, json }, key, text, record, index)
+                                    onButtonClick: (props, key) => this.bodyButtonClick(props, key, text, record, index)
                                 });
                             }
                         });
@@ -52,12 +51,86 @@ class BookComp extends React.Component {
     }
 
 
-    onButtonClick = (props,key) => {
-        console.log(key)
+    onButtonClick = (props, key) => {
+
+        const {editTable, search} = this.props;
+        if ('add' === key) {
+            this.setEditTableStatus('edit')
+            editTable.addRow('table');
+        } else if ('edit' === key) {
+            this.setEditTableStatus('edit')
+        } else if ('delete' === key) {
+            let rows = editTable.getCheckedRows('table');
+            let rowsIndex = rows.map(item => {
+                return item.index;
+            })
+            editTable.deleteTableRowsByIndex('table', rowsIndex);
+        } else if ('cancel' === key) {
+            this.props.editTable.cancelEdit('table');
+            this.editTableStatusChange();
+        } else if ('save' === key) {
+            let tableData = editTable.getChangedRows('table');
+            let data = {
+                pageid: '60701010p',
+                model: {
+                    areaType: "table",
+                    areacode: 'table',
+                    pageinfo: null,
+                    rows: tableData
+                }
+            };
+            ajax({
+                url: '/nccloud/book/action/save.do',
+                data: data,
+                success: (res) => {     //此处使用箭头函数，如果不使用箭头函数，一定要bind(this)
+                    let {success, data} = res;
+                    if (success) {
+                        toast({title: '保存成功', color: 'success'});
+                        this.props.editTable.setStatus('table', 'browse');//设置表格状态为浏览态
+                    }
+                }
+            });
+        }
     }
 
-    clickSearchBtn = (props) => {
-        console.log("查询")
+    bodyButtonClick = (props, key, text, record, index) => {
+        if ('tab_add' === key) {
+            props.editTable.addRow('table', index + 1);
+        } else if ('tab_del' === key) {
+            props.editTable.deleteTableRowsByIndex('table', index);
+        }
+
+    }
+
+    clickSearchBtn = (props, queryInfo) => {
+        let pageInfo = props.editTable.getTablePageInfo('table');
+
+        queryInfo = props.search.getQueryInfo('search');
+
+        queryInfo.pageInfo = pageInfo;
+        queryInfo.pageCode = '60701010p';
+
+        // 刷新按钮可用
+        props.button.setDisabled({'refresh': false});
+
+        ajax({
+            url: '/nccloud/book/action/querypage.do',
+            data: queryInfo,
+            success: (res) => {
+                let {success, data} = res;
+                if (res.formulamsg && res.formulamsg instanceof Array && res.formulamsg.length > 0) {
+                    props.dealFormulamsg(res.formulamsg);
+                }
+                if (success && data && data['table']) {
+                    props.editTable.setTableData('table', data['table']);
+                    toast({color: 'success'});
+                } else {
+                    props.editTable.setTableData('table', {rows: []});
+                    toast({color: 'warning', content: "未查询出符合条件的数据！"});/* 国际化处理： 未查询出符合条件的数据！*/
+                }
+
+            }
+        });
     }
 
     handlePageInfoChange = (props, config, pks) => {
@@ -66,6 +139,33 @@ class BookComp extends React.Component {
 
     onRowDoubleClick = (record, index, props) => {
 
+    }
+
+
+    //行状态 String ‘edit’/'browse'
+    setEditTableStatus = (status) => {
+        this.props.editTable.setStatus('table', status);
+        this.editTableStatusChange();
+    }
+
+    editTableStatusChange = () => {
+        console.log("editTableStatusChange");
+        this.buttonVisibleControl();
+    }
+
+    buttonVisibleControl = () => {
+        const tableid = 'table';
+        let tableData = this.props.editTable.getCheckedRows(tableid);
+        let length = tableData.length;//获取列表页选择数据的行数
+        let tableStatus = this.props.editTable.getStatus(tableid);
+        this.props.button.setButtonsVisible({
+            add: true,
+            edit: tableStatus !== 'edit',
+            save: tableStatus === 'edit',
+            cancel: tableStatus === 'edit',
+            delete: true,
+            refresh: tableStatus !== 'edit'
+        });
     }
 
     render() {
@@ -100,7 +200,8 @@ class BookComp extends React.Component {
                     dataSource: 'book_search_cache',
                     pkname: 'pk_book',
                     handlePageInfoChange: this.handlePageInfoChange,
-                    onRowDoubleClick: this.onRowDoubleClick
+                    onRowDoubleClick: this.onRowDoubleClick,
+                    statusChange: this.editTableStatusChange
                 })}
             </div>
         </div>
