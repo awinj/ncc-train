@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<actions>
+    <action>
+        <name>book.action.save</name>
+        <label>保存</label>
+        <clazz>nccloud.web.pubitf.book.action.SaveAction</clazz>
+    </action>
+
+    <action>
+        <name>book.action.querypage</name>
+        <label>列表查询</label>
+        <clazz>nccloud.web.pubitf.book.action.QueryListAction
+        </clazz>
+    </action>
+    <action>
+        <name>book.action.querypagebypk</name>
+        <label>分页查询</label>
+        <clazz>nccloud.web.pubitf.book.action.QueryByPksAction
+        </clazz>
+    </action>
+
+</actions>

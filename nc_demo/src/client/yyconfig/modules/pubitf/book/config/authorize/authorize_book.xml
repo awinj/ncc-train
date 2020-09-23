@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<authorizes>
+    <authorize>
+        <!-- 应用编码 -->
+        <appcode>60701010</appcode>
+        <actions>
+            <!-- 列表查询 -->
+            <action>book.action.querypage</action>
+            <!-- pk查询 -->
+            <action>book.action.querypagebypk</action>
+            <!-- 保存 -->
+            <action>book.action.save</action>
+        </actions>
+    </authorize>
+</authorizes>
