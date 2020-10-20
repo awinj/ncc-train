@@ -1,6 +1,7 @@
 
 
-function initTemplate(props, {pagecode,appcode}, json)  {
+
+function initTemplate(props, {pagecode,appcode}, json,callback)  {
     props.createUIDom({
             pagecode,       //页面code
             appcode
@@ -13,7 +14,33 @@ function initTemplate(props, {pagecode,appcode}, json)  {
                 }
                 if (data.template) {
                     let meta = data.template;
-                    props.meta.setMeta(meta);
+
+                    for (let item of Object.keys(meta.gridrelation)) {
+                        meta[item].items.push({
+                            attrcode: 'opr',
+                            label: '操作',/* 国际化处理： 操作*/
+                            itemtype: 'customer',
+                            fixed: 'right',
+                            className: 'table-opr',
+                            visible: true,
+                            width: 150,
+                            render: (text, record, index) => {
+                                const isEdit = this.state.isEdit;
+                                const {cardButton}=this.appConfig;
+                                let buttonAry = [];
+                                if (!isEdit) { //浏览态
+                                    buttonAry = [record.expandRowStatus ? cardButton.fold : cardButton.unfold];
+                                } else { //编辑态
+                                    buttonAry = [cardButton.expand, cardButton.insertRow, cardButton.delRow];
+                                }
+                                return props.button.createOprationButton(buttonAry, {
+                                    area: 'body',
+                                });
+                            }
+                        })
+                    }
+
+                    props.meta.setMeta(meta,callback);
                 }
             }
         }

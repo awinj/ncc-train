@@ -3,7 +3,6 @@ import React from 'react';
 const renderSearch=(props,area,config)=>{
     const { search} = props;
     const {NCCreateSearch} = search;
-    debugger
     return <div className="nc-bill-search-area">
         {NCCreateSearch(area,config)}
     </div>
@@ -27,4 +26,20 @@ const renderTable=(props,area,config)=>{
 }
 
 
-export {renderSearch,renderButton,renderTable}
+const renderCardForm=(props,area,config)=>{
+    let { form } = props;
+    let { createForm } = form;
+    return  <div className="nc-bill-form-area">
+        {createForm(area, config)}
+    </div>
+}
+
+const renderCardTable=(props,area,config)=>{
+    let { cardTable } = props;
+    let { createCardTable } = cardTable;
+    return  <div className="table-area">
+        {createCardTable(area,config)}
+    </div>
+}
+
+export {renderSearch,renderButton,renderTable,renderCardForm,renderCardTable}
