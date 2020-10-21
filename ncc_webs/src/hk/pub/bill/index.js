@@ -1,19 +1,9 @@
 import React from 'react'
 import {createPage,base} from 'nc-lightapp-front';
-import {renderSearch,renderButton,renderTable,renderCardForm,renderCardTable,
-    initTemplate,
-    onButtonClick,searchClick,buttonVisibleByStatus} from '../method'
+import {BillRender,BillEvent} from './method'
 
 const { NCAffix } = base;
 
-const renderDefaultConfig = {
-    renderSearch,
-    renderButton,
-    initTemplate,
-    renderTable,
-    renderCardForm,
-    renderCardTable
-}
 
 const defaultAppConfig = {
     appCode: '60701010',
@@ -33,48 +23,40 @@ const defaultAppConfig = {
     },
     cardButton:{
         add:'add',
+        edit:'edit',
+        save:'save',
+        cancel:'cancel',
         refresh:'refresh',
+        addRow:'addRow',
+        delRows:'delRows',
         expand:'expand',
-        fold:'fold',
-        unfold:'unfold',
         insertRow:'insertRow',
-        delRow:'delRow'
+        delRow:'delRow',
+        fold:'fold',
+        unfold:'unfold'
+    },
+    listButton:{
+        add:'add',
+        refresh:'refresh',
+        delete:'delete'
     }
 }
 
-const methodDefaultConfig={
-    searchClick:searchClick,
-    onButtonClick:onButtonClick,
-    onAfterEvent:()=>{},
-    handlePageInfoChange:()=>{},
-    onRowDoubleClick:()=>{},
-    buttonVisibleByStatus:()=>{}
-}
 
-const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => (App) => {
-    renderConfig = {...renderDefaultConfig, ...renderConfig}
+const createBillPage = ({appConfig = {},methodConfig=new BillEvent(), renderConfig = new BillRender()}) => (App) => {
+
     appConfig = {...defaultAppConfig, ...appConfig}
-    methodConfig={...methodDefaultConfig,...methodConfig}
 
     class Bill extends React.Component {
         constructor(props) {
             super(props);
             this.state = {
-                showMode: 'form',
+                showMode: 'list',
                 selectPk: '',
                 isEdit: true,
             }
             this.appConfig=appConfig
-
-            this.toCard=({selectPk,isEdit=false})=>{
-                this.setState(
-                    {
-                        selectPk,
-                        isEdit,
-                        showMode:'form'
-                    }
-                )
-            }
+            methodConfig.register(this);
             this.isCard=()=>{
                 return this.state.showMode != 'list'
             }
@@ -84,14 +66,14 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
                     const {renderSearch} = renderConfig;
                     return renderSearch(this.props,appConfig.listArea.query,{
                         dataSource: 'book_search_cache',
-                        clickSearchBtn: methodConfig.clickSearchBtn
+                        clickSearchBtn:(props,queryInfo)=> methodConfig.searchClick(props,queryInfo)
                     });
                 },
                 createButton:()=>{
                     const {renderButton} = renderConfig;
                     return renderButton(this.props, {
                         area: appConfig.listArea.headBtn,
-                        onButtonClick: methodConfig.onButtonClick.bind(this)
+                        onButtonClick:(props,key)=> methodConfig.onButtonClick(props,key)
                     });
                 },
                 createTable:()=>{
@@ -100,9 +82,9 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
                         showCheck: true,
                         dataSource: 'book_search_cache',
                         pkname: 'pk_book',
-                        handlePageInfoChange: methodConfig.handlePageInfoChange,
-                        onRowDoubleClick: methodConfig.onRowDoubleClick,
-                        statusChange: methodConfig.editTableStatusChange
+                        handlePageInfoChange: methodConfig.handleListPageChange.bind(methodConfig),
+                        onRowDoubleClick: methodConfig.onListRowDoubleClick.bind(methodConfig),
+                        statusChange: methodConfig.editTableStatusChange.bind(methodConfig)
                     })
                 }
             }
@@ -111,13 +93,13 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
                     const {renderButton} = renderConfig;
                     return renderButton(this.props, {
                         area: appConfig.cardArea.headBtn,
-                        onButtonClick: methodConfig.onButtonClick.bind(this)
+                        onButtonClick: methodConfig.onButtonClick.bind(methodConfig)
                     });
                 },
                 createForm:()=>{
                     const {renderCardForm} = renderConfig;
                     return renderCardForm(this.props,appConfig.cardArea.head,{
-                        onAfterEvent: methodConfig.onAfterEvent.bind(this),
+                        onAfterEvent: methodConfig.onAfterEvent.bind(methodConfig),
                         setVisibleByForm: true,
                     })
                 },
@@ -127,7 +109,10 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
                         tableHead: this.card.getTableHead,
                         showCheck: true,
                         showIndex: true,
-                        onAfterEvent: methodConfig.onAfterEvent.bind(this),
+                        onAfterEvent: methodConfig.onBodyAfterEvent.bind(methodConfig),
+                        onSelected:methodConfig.onBodySelected.bind(methodConfig),
+                        onSelectedAll:methodConfig.onBodySelectedAll.bind(methodConfig),
+                        hideSwitch:()=>{return !this.state.isEdit}
                     })
                 },
                 getTableHead: () => {
@@ -138,7 +123,7 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
                             <div className="definition-icons">
                                 {createButtonApp({
                                     area: appConfig.cardArea.bodyBtn,
-                                    onButtonClick: methodConfig.bodyButtonClick,
+                                    onButtonClick:(props,key)=> methodConfig.onBodyButtonClick(props,appConfig.cardArea.body,key),
                                     popContainer: document.querySelector('.header-button-area')
                                 })}
                             </div>
@@ -149,25 +134,48 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
             }
             this.buttonVisibleRefresh=()=>{
                 //TODO 默认实现基本按钮的显示控制
-                const {button}=this.props;
-                const {setButtonVisible,getButtons}=button;
+                const {button,cardTable}=this.props;
+                const {setButtonVisible,getButtons,setButtonDisabled}=button;
+                const {getCheckedRows}=cardTable;
                 let buttons=getButtons();
                 if(this.isCard()){
-                    let obj={};
+                    let visibleObj={};
+                    let disableObj={};
                     buttons.filter(btn=>btn.area===appConfig.cardArea.headBtn).forEach(btn=>{
+                        visibleObj[btn.key]=false
+                    })
+                    let {isEdit}=this.state;
+                    if(isEdit){
+                        visibleObj[appConfig.cardButton.save]=true;
+                        visibleObj[appConfig.cardButton.cancel]=true;
+
+                        //设置表体肩部按钮的可用性
+                        disableObj[appConfig.cardButton.addRow]=false;
+                        let selectRows=getCheckedRows(appConfig.cardArea.body);
+                        disableObj[appConfig.cardButton.delRows]=!(selectRows&&selectRows.length>0);
+
+                    }else{
+                        visibleObj[appConfig.cardButton.add]=true;
+                        visibleObj[appConfig.cardButton.refresh]=true;
+                        //设置表体肩部按钮的可用性
+                        disableObj[appConfig.cardButton.addRow]=true;
+                        disableObj[appConfig.cardButton.delRows]=true;
+                    }
+                    setButtonVisible(visibleObj);
+                    setButtonDisabled(disableObj)
+                }else{
+                    let obj={};
+                    buttons.filter(btn=>btn.area===appConfig.listArea.headBtn).forEach(btn=>{
                         obj[btn.key]=false
                     })
-                    debugger
-                    obj[appConfig.cardButton.add]=true;
-                    obj[appConfig.cardButton.refresh]=true;
+                    obj[appConfig.listButton.add]=true;
+                    obj[appConfig.listButton.refresh]=true;
                     setButtonVisible(obj);
-                }else{
-                    setButtonVisible({'add':false,'refresh':true})
                 }
 
-                debugger
+
                 buttons.forEach(btn=>{
-                    methodDefaultConfig.buttonVisibleByStatus(this.props,btn);
+                    methodConfig.buttonControlByStatus(this.props,btn);
                 })
             }
 
@@ -177,7 +185,6 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
                         <div className="header-title-search-area">
                             <h2 className="title-search-detail">{'图书档案'}</h2>
                         </div>
-
                         {this.list.createButton()}
                     </div>
 
@@ -198,7 +205,7 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
                                     {createBillHeadInfo({
                                         title: '图书管理',//标题
                                         billCode: 'fasdfasdf',//单据号
-                                        backBtnClick: this.onButtonClick
+                                        backBtnClick: ()=>methodConfig.onButtonClick(this.props,'back')
                                     })}
                                 </div>
                                 {
@@ -208,7 +215,6 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
                         </NCAffix>
                         {this.card.createForm()}
                     </div>
-
                     {this.card.createCardTable()}
                 </div>
             }
@@ -228,8 +234,8 @@ const createBillPage = ({appConfig = {},methodConfig={}}, renderConfig = {}) => 
 
         componentWillMount(){
             console.log('componentWillMount')
-            let {initTemplate} = renderConfig;
-            initTemplate.bind(this)(this.props, {appcode: appConfig.appCode, pagecode: appConfig.pageCode},{},this.buttonVisibleRefresh)
+            let {appCode,pageCode}=appConfig;
+            methodConfig.initTemplate(this.props, {appCode,pageCode},{},this.buttonVisibleRefresh)
         }
 
 
